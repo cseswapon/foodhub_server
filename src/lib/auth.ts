@@ -26,6 +26,10 @@ export const auth = betterAuth({
         type: "string",
         required: true,
       },
+      address: {
+        type: "string",
+        required: false,
+      },
       status: {
         type: ["active", "inactive"],
         required: false,
