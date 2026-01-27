@@ -1,5 +1,5 @@
 import { db as Database } from "@/db";
-import { Categories } from "@/db/generated/client";
+import { Prisma } from "@/db/generated/client";
 import { getPagination } from "@/utils/pagination";
 import { Request } from "express";
 
@@ -40,14 +40,14 @@ export class CategoriesService {
     return categories;
   };
 
-  createCategories = async (data: Categories) => {
+  createCategories = async (data: Prisma.CategoriesCreateInput) => {
     const result = await this.db.categories.create({
       data,
     });
     return result;
   };
 
-  updateCategories = async (id: string, data: Partial<Categories>) => {
+  updateCategories = async (id: string, data: Prisma.CategoriesUpdateInput) => {
     const categories = await this.db.categories.update({
       where: {
         id,
@@ -58,7 +58,7 @@ export class CategoriesService {
   };
 
   deleteCategories = async (id: string) => {
-    this.db.$transaction(async (t) => {
+    return this.db.$transaction(async (t) => {
       const categories = await t.categories.findFirst({
         where: {
           id,
@@ -73,7 +73,7 @@ export class CategoriesService {
         },
       });
 
-      return "Successfully delete";
+      return { message: "Successfully deleted" };
     });
   };
 }

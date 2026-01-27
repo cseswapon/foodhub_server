@@ -1,0 +1,38 @@
+import express, { Router } from "express";
+import { authGuard } from "../../middleware/authGuard";
+import { ProvidersController } from "./provider.controller";
+
+const router: Router = express.Router();
+const providerController = new ProvidersController();
+
+router.get(
+  "/all",
+  authGuard(),
+  providerController.getAllProviders.bind(providerController),
+);
+
+router.get(
+  "/:id",
+  authGuard(),
+  providerController.getSingleProvider.bind(providerController),
+);
+
+router.post(
+  "/",
+  authGuard("provider", "admin"),
+  providerController.createProvider.bind(providerController),
+);
+
+router.patch(
+  "/:id",
+  authGuard("provider", "admin"),
+  providerController.updateProvider.bind(providerController),
+);
+
+router.delete(
+  "/:id",
+  authGuard("admin"),
+  providerController.deleteProvider.bind(providerController),
+);
+
+export default router;
