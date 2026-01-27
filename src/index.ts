@@ -4,6 +4,7 @@ import cors from "cors";
 import router from "./routes/routes.js";
 import { auth } from "./lib/auth.js";
 import { toNodeHandler } from "better-auth/node";
+import { authGuard } from "./middleware/authGuard.js";
 
 const app: Application = express();
 
