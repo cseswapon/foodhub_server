@@ -46,8 +46,7 @@ export class UserController {
         data: null,
       });
     }
-    const { status } = body || {};
-    const updateUser = await this.userService.updateStatus(id, status);
+    const updateUser = await this.userService.updateStatusRole(id, body);
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,

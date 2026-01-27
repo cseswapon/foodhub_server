@@ -1,7 +1,12 @@
 import { db as database } from "@/db";
-import { UserStatus } from "@/db/generated/enums";
+import { UserRole, UserStatus } from "@/db/generated/enums";
 import { getPagination } from "@/utils/pagination";
 import { Request } from "express";
+
+interface IUserStatus {
+  status: UserStatus;
+  role: UserRole;
+}
 
 export class UserServices {
   private db;
@@ -42,18 +47,34 @@ export class UserServices {
     };
   }
 
-  async updateStatus(id: string, status: UserStatus) {
+  async updateStatusRole(id: string, data: Partial<IUserStatus>) {
+    const updateData: Partial<IUserStatus> = {};
+
+    if (data.role === "admin") {
+      throw Error("Change no role");
+    }
+
+    if (data.role !== undefined) {
+      updateData.role = data.role;
+    }
+    if (data.status !== undefined) {
+      updateData.status = data.status;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      throw new Error("Nothing to update");
+    }
+
     const user = await this.db.user.update({
       where: {
         id: id as string,
       },
-      data: {
-        status: status,
-      },
+      data: updateData,
       select: {
         id: true,
         email: true,
         status: true,
+        role: true,
       },
     });
 
