@@ -54,4 +54,26 @@ export class UserController {
       data: updateUser,
     });
   });
+
+  updateProfile = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user.id as string; 
+    const body: { name?: string; phone?: string; address?: string } = req.body;
+  
+    if (!body.name && !body.phone && !body.address) {
+      return sendResponse(res, {
+        success: false,
+        statusCode: httpStatus.BAD_REQUEST,
+        message: "Nothing to update",
+      });
+    }
+
+    const updatedUser = await this.userService.updateProfile(userId, body);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Profile updated successfully",
+      data: updatedUser,
+    });
+  });
 }

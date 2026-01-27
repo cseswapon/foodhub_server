@@ -1,4 +1,5 @@
 import { db as database } from "@/db";
+import { Prisma } from "@/db/generated/client";
 import { UserRole, UserStatus } from "@/db/generated/enums";
 import { getPagination } from "@/utils/pagination";
 import { Request } from "express";
@@ -6,6 +7,11 @@ import { Request } from "express";
 interface IUserStatus {
   status: UserStatus;
   role: UserRole;
+}
+interface IUserProfileUpdate {
+  name?: string;
+  phone?: string;
+  address?: string;
 }
 
 export class UserServices {
@@ -79,5 +85,25 @@ export class UserServices {
     });
 
     return user;
+  }
+
+  async updateProfile(userId: string,data: Prisma.UserUpdateInput) {
+    if (data.role || data.emailVerified || data.status) {
+      return "This payload not supported"
+    }
+    const updateUser = await this.db.user.update({
+      where: { id: userId },
+      data,
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        address: true,
+        email: true,
+        role: true,
+        updatedAt: true,
+      },
+    });
+    return updateUser;
   }
 }

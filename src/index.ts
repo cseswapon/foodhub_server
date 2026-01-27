@@ -7,7 +7,9 @@ import router from "./routes/routes";
 import { authGuard } from "./middleware/authGuard";
 import { UserServices } from "./module/user/user.service";
 import { sendResponse } from "./utils/sendResponse";
+import { UserController } from "./module/user/user.controller";
 const userService = new UserServices();
+const userController = new UserController()
 
 const app: Application = express();
 
@@ -20,6 +22,12 @@ app.use(
   }),
 );
 
+// user profile
+app.patch(
+  "/api/users/profile",
+  authGuard(),
+  userController.updateProfile.bind(userController),
+);
 app.use("/api/auth/me", authGuard(), async (req: Request, res: Response) => {
   const user = await userService.getUserProfile(req.user.email as string);
   sendResponse(res, {
