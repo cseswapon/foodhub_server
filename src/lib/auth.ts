@@ -33,7 +33,7 @@ export const auth = betterAuth({
         required: false,
       },
       status: {
-        type: ["active", "inactive"],
+        type: ["active", "suspend"],
         required: false,
         defaultValue: "active",
       },

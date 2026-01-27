@@ -1,0 +1,21 @@
+model Order {
+    id          String @id @default(uuid())
+    customer_id String
+    customer    User   @relation(fields: [customer_id], references: [id])
+
+    provider_id String
+    provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
+
+    total_price      Decimal
+    delivery_address String
+    payment_method   PaymentMethod
+
+    status OrderStatus
+
+    created_at DateTime     @default(now())
+    updated_at DateTime     @updatedAt()
+    orderItems Order_Item[]
+
+    @@index([status])
+    @@map("orders")
+}

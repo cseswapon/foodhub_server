@@ -1,0 +1,14 @@
+model Review {
+    id String @id @default(uuid())
+
+    meal_id String
+    meal    Meal   @relation(fields: [meal_id], references: [id])
+
+    rating Int
+
+    user_id String
+    user    User    @relation(fields: [user_id], references: [id])
+    userId  String?
+
+    @@map("reviews")
+}

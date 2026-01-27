@@ -1,0 +1,22 @@
+model Provider {
+    id String @id @default(uuid())
+
+    user_id String
+    user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+    restaurant_name String
+    description     String
+    address         String
+    is_open         Boolean
+
+    fb_link String
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    meals  Meal[]
+    orders Order[]
+
+    @@unique([user_id])
+    @@map("providers")
+}

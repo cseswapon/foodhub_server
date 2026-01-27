@@ -1,5 +1,25 @@
 model Meal {
-    id      String  @id() @default(uuid())
-    title   String
-    content String?
+    id String @id @default(uuid())
+
+    provider_id String
+    provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
+
+    category_id String
+    category    Categories @relation(fields: [category_id], references: [id], onDelete: Cascade)
+
+    name         String
+    description  String
+    price        Decimal
+    dietary_type DietaryType
+    is_available Boolean
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    reviews Review[]
+
+    @@index([dietary_type])
+    @@index([name])
+    @@index([price])
+    @@map("meals")
 }

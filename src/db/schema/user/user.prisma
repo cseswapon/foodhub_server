@@ -12,7 +12,10 @@ model User {
   status        UserStatus @default(active)
   sessions      Session[]
   accounts      Account[]
+  provider      Provider?
+  orders        Order[]
+  reviews       Review[]
 
   @@unique([email])
-  @@map("user")
+  @@map("users")
 }

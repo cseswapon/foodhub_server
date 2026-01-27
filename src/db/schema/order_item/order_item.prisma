@@ -1,0 +1,7 @@
+model Order_Item {
+    id      String @id @default(uuid())
+    order   Order  @relation(fields: [orderId], references: [id])
+    orderId String
+
+    @@map("order_items")
+}
