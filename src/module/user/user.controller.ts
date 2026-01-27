@@ -37,9 +37,8 @@ export class UserController {
 
   updateUser = catchAsync(async (req: Request, res: Response) => {
     const body = req.body;
-      const id = req.params.id as string;
-      console.log(req.user);
-    if (req.user.role === "admin") {
+    const id = req.params.id as string;
+    if (req.user.role?.includes("admin") && req.user.id === id) {
       return sendResponse(res, {
         success: true,
         statusCode: httpStatus.OK,
