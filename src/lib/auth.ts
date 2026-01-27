@@ -1,7 +1,9 @@
+import { config } from "@/config";
+import { db } from "@/db";
 import { betterAuth, string } from "better-auth";
-import { db } from "../db/index.js";
+
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { config } from "../config/index.js";
+
 
 export const auth = betterAuth({
   rateLimit: {

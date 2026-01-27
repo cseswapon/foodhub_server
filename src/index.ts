@@ -1,14 +1,15 @@
 import express, { Application, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import cors from "cors";
-import router from "./routes/routes.js";
-import { auth } from "./lib/auth.js";
 import { toNodeHandler } from "better-auth/node";
-import { authGuard } from "./middleware/authGuard.js";
+import { auth } from "./lib/auth";
+import router from "./routes/routes";
+import { authGuard } from "./middleware/authGuard";
+import { UserServices } from "./module/user/user.service";
+import { sendResponse } from "./utils/sendResponse";
+const userService = new UserServices();
 
 const app: Application = express();
-
-app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());
 app.use(express.urlencoded());
@@ -19,6 +20,18 @@ app.use(
   }),
 );
 
+app.use("/api/auth/me", authGuard(), async (req: Request, res: Response) => {
+  const user = await userService.getUserProfile(req.user.email as string);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Profile",
+    data: user,
+  });
+});
+// auth route
+app.all("/api/auth/*splat", toNodeHandler(auth));
+
 app.get("/", (req: Request, res: Response) => {
   res.status(httpStatus.OK).send({
     success: true,
@@ -27,6 +40,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
+// all route
 app.use(router);
 
 export default app;

@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from "express";
 import httpStatus from "http-status-codes";
+import userAuthRoute from "@/module/user/user.route";
 
 const router: Router = express.Router();
 
@@ -8,16 +9,12 @@ interface IRoute {
   route: Router;
 }
 
-const apiVersion = `/api/v1`;
+const apiVersion = `/api`;
 
 const moduleRouter: IRoute[] = [
   {
-    path: `${apiVersion}/test`,
-    route: router.get("/", (req, res) => {
-      res.send({
-        message: "testing route",
-      });
-    }),
+    path: `${apiVersion}/admin`,
+    route: userAuthRoute,
   },
 ];
 

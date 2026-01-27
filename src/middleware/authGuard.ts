@@ -1,7 +1,7 @@
+import { UserRole } from "@/db/generated/enums";
+import { auth } from "@/lib/auth";
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
-import { UserRole } from "../db/generated/enums.js";
-import { auth } from "../lib/auth.js";
 
 export const authGuard = (...role: UserRole[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +12,15 @@ export const authGuard = (...role: UserRole[]) => {
       if (!session) {
         return res.status(httpStatus.UNAUTHORIZED).send({
           success: false,
+          statusCode: httpStatus.UNAUTHORIZED,
           message: "You'r unauthorize",
+        });
+      }
+      if (role.length && !role.includes(session.user.role as UserRole)) {
+        return res.status(httpStatus.UNAUTHORIZED).send({
+          success: false,
+          statusCode: httpStatus.UNAUTHORIZED,
+          message: "You'r role mismatch",
         });
       }
       req.user = {
@@ -26,6 +34,7 @@ export const authGuard = (...role: UserRole[]) => {
     } catch (error) {
       res.status(httpStatus.FORBIDDEN).send({
         status: false,
+        statusCode: httpStatus.FORBIDDEN,
         message: "Forbidden",
       });
     }
