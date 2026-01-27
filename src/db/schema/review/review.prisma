@@ -8,7 +8,11 @@ model Review {
 
     user_id String
     user    User    @relation(fields: [user_id], references: [id])
-    userId  String?
+
+    is_visible Boolean @default(true)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 
     @@map("reviews")
 }

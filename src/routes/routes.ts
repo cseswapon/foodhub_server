@@ -4,6 +4,7 @@ import userAuthRoute from "@/module/user/user.route";
 import categoriesRoute from "@/module/categories/categories.route";
 import providerRoute from "@/module/provider/provider.route";
 import mealRoute from "@/module/meal/meal.route";
+import reviewRoute from "@/module/review/review.route";
 
 const router: Router = express.Router();
 
@@ -30,6 +31,10 @@ const moduleRouter: IRoute[] = [
   {
     path: `${apiVersion}/meal`,
     route: mealRoute,
+  },
+  {
+    path: `${apiVersion}/review`,
+    route: reviewRoute,
   },
 ];
 
