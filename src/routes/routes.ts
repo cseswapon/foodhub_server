@@ -2,6 +2,8 @@ import express, { Request, Response, Router } from "express";
 import httpStatus from "http-status-codes";
 import userAuthRoute from "@/module/user/user.route";
 import categoriesRoute from "@/module/categories/categories.route";
+import providerRoute from "@/module/provider/provider.route";
+import mealRoute from "@/module/meal/meal.route";
 
 const router: Router = express.Router();
 
@@ -20,6 +22,14 @@ const moduleRouter: IRoute[] = [
   {
     path: `${apiVersion}/categories`,
     route: categoriesRoute,
+  },
+  {
+    path: `${apiVersion}/provider`,
+    route: providerRoute,
+  },
+  {
+    path: `${apiVersion}/meal`,
+    route: mealRoute,
   },
 ];
 
