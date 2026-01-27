@@ -19,8 +19,36 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
 export const UserStatus = {
-  active: 'active',
-  inactive: 'inactive'
+  activate: 'activate',
+  suspend: 'suspend'
 } as const
 
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+
+
+export const DietaryType = {
+  veg: 'veg',
+  non_veg: 'non_veg',
+  vegan: 'vegan'
+} as const
+
+export type DietaryType = (typeof DietaryType)[keyof typeof DietaryType]
+
+
+export const PaymentMethod = {
+  cod: 'cod',
+  online: 'online'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
+export const OrderStatus = {
+  placed: 'placed',
+  preparing: 'preparing',
+  ready: 'ready',
+  delivered: 'delivered',
+  cancelled: 'cancelled'
+} as const
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]

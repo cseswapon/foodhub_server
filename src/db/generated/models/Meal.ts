@@ -20,46 +20,106 @@ export type MealModel = runtime.Types.Result.DefaultSelection<Prisma.$MealPayloa
 
 export type AggregateMeal = {
   _count: MealCountAggregateOutputType | null
+  _avg: MealAvgAggregateOutputType | null
+  _sum: MealSumAggregateOutputType | null
   _min: MealMinAggregateOutputType | null
   _max: MealMaxAggregateOutputType | null
 }
 
+export type MealAvgAggregateOutputType = {
+  price: runtime.Decimal | null
+}
+
+export type MealSumAggregateOutputType = {
+  price: runtime.Decimal | null
+}
+
 export type MealMinAggregateOutputType = {
   id: string | null
-  title: string | null
-  content: string | null
+  provider_id: string | null
+  category_id: string | null
+  name: string | null
+  description: string | null
+  price: runtime.Decimal | null
+  dietary_type: $Enums.DietaryType | null
+  is_available: boolean | null
+  created_at: Date | null
+  updated_at: Date | null
 }
 
 export type MealMaxAggregateOutputType = {
   id: string | null
-  title: string | null
-  content: string | null
+  provider_id: string | null
+  category_id: string | null
+  name: string | null
+  description: string | null
+  price: runtime.Decimal | null
+  dietary_type: $Enums.DietaryType | null
+  is_available: boolean | null
+  created_at: Date | null
+  updated_at: Date | null
 }
 
 export type MealCountAggregateOutputType = {
   id: number
-  title: number
-  content: number
+  provider_id: number
+  category_id: number
+  name: number
+  description: number
+  price: number
+  dietary_type: number
+  is_available: number
+  created_at: number
+  updated_at: number
   _all: number
 }
 
 
+export type MealAvgAggregateInputType = {
+  price?: true
+}
+
+export type MealSumAggregateInputType = {
+  price?: true
+}
+
 export type MealMinAggregateInputType = {
   id?: true
-  title?: true
-  content?: true
+  provider_id?: true
+  category_id?: true
+  name?: true
+  description?: true
+  price?: true
+  dietary_type?: true
+  is_available?: true
+  created_at?: true
+  updated_at?: true
 }
 
 export type MealMaxAggregateInputType = {
   id?: true
-  title?: true
-  content?: true
+  provider_id?: true
+  category_id?: true
+  name?: true
+  description?: true
+  price?: true
+  dietary_type?: true
+  is_available?: true
+  created_at?: true
+  updated_at?: true
 }
 
 export type MealCountAggregateInputType = {
   id?: true
-  title?: true
-  content?: true
+  provider_id?: true
+  category_id?: true
+  name?: true
+  description?: true
+  price?: true
+  dietary_type?: true
+  is_available?: true
+  created_at?: true
+  updated_at?: true
   _all?: true
 }
 
@@ -101,6 +161,18 @@ export type MealAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: MealAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: MealSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: MealMinAggregateInputType
@@ -131,15 +203,26 @@ export type MealGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: MealCountAggregateInputType | true
+  _avg?: MealAvgAggregateInputType
+  _sum?: MealSumAggregateInputType
   _min?: MealMinAggregateInputType
   _max?: MealMaxAggregateInputType
 }
 
 export type MealGroupByOutputType = {
   id: string
-  title: string
-  content: string | null
+  provider_id: string
+  category_id: string
+  name: string
+  description: string
+  price: runtime.Decimal
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at: Date
+  updated_at: Date
   _count: MealCountAggregateOutputType | null
+  _avg: MealAvgAggregateOutputType | null
+  _sum: MealSumAggregateOutputType | null
   _min: MealMinAggregateOutputType | null
   _max: MealMaxAggregateOutputType | null
 }
@@ -164,14 +247,34 @@ export type MealWhereInput = {
   OR?: Prisma.MealWhereInput[]
   NOT?: Prisma.MealWhereInput | Prisma.MealWhereInput[]
   id?: Prisma.StringFilter<"Meal"> | string
-  title?: Prisma.StringFilter<"Meal"> | string
-  content?: Prisma.StringNullableFilter<"Meal"> | string | null
+  provider_id?: Prisma.StringFilter<"Meal"> | string
+  category_id?: Prisma.StringFilter<"Meal"> | string
+  name?: Prisma.StringFilter<"Meal"> | string
+  description?: Prisma.StringFilter<"Meal"> | string
+  price?: Prisma.DecimalFilter<"Meal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFilter<"Meal"> | $Enums.DietaryType
+  is_available?: Prisma.BoolFilter<"Meal"> | boolean
+  created_at?: Prisma.DateTimeFilter<"Meal"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"Meal"> | Date | string
+  provider?: Prisma.XOR<Prisma.ProviderScalarRelationFilter, Prisma.ProviderWhereInput>
+  category?: Prisma.XOR<Prisma.CategoriesScalarRelationFilter, Prisma.CategoriesWhereInput>
+  reviews?: Prisma.ReviewListRelationFilter
 }
 
 export type MealOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  content?: Prisma.SortOrderInput | Prisma.SortOrder
+  provider_id?: Prisma.SortOrder
+  category_id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  dietary_type?: Prisma.SortOrder
+  is_available?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
+  provider?: Prisma.ProviderOrderByWithRelationInput
+  category?: Prisma.CategoriesOrderByWithRelationInput
+  reviews?: Prisma.ReviewOrderByRelationAggregateInput
 }
 
 export type MealWhereUniqueInput = Prisma.AtLeast<{
@@ -179,17 +282,36 @@ export type MealWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.MealWhereInput | Prisma.MealWhereInput[]
   OR?: Prisma.MealWhereInput[]
   NOT?: Prisma.MealWhereInput | Prisma.MealWhereInput[]
-  title?: Prisma.StringFilter<"Meal"> | string
-  content?: Prisma.StringNullableFilter<"Meal"> | string | null
+  provider_id?: Prisma.StringFilter<"Meal"> | string
+  category_id?: Prisma.StringFilter<"Meal"> | string
+  name?: Prisma.StringFilter<"Meal"> | string
+  description?: Prisma.StringFilter<"Meal"> | string
+  price?: Prisma.DecimalFilter<"Meal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFilter<"Meal"> | $Enums.DietaryType
+  is_available?: Prisma.BoolFilter<"Meal"> | boolean
+  created_at?: Prisma.DateTimeFilter<"Meal"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"Meal"> | Date | string
+  provider?: Prisma.XOR<Prisma.ProviderScalarRelationFilter, Prisma.ProviderWhereInput>
+  category?: Prisma.XOR<Prisma.CategoriesScalarRelationFilter, Prisma.CategoriesWhereInput>
+  reviews?: Prisma.ReviewListRelationFilter
 }, "id">
 
 export type MealOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  content?: Prisma.SortOrderInput | Prisma.SortOrder
+  provider_id?: Prisma.SortOrder
+  category_id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  dietary_type?: Prisma.SortOrder
+  is_available?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
   _count?: Prisma.MealCountOrderByAggregateInput
+  _avg?: Prisma.MealAvgOrderByAggregateInput
   _max?: Prisma.MealMaxOrderByAggregateInput
   _min?: Prisma.MealMinOrderByAggregateInput
+  _sum?: Prisma.MealSumOrderByAggregateInput
 }
 
 export type MealScalarWhereWithAggregatesInput = {
@@ -197,105 +319,699 @@ export type MealScalarWhereWithAggregatesInput = {
   OR?: Prisma.MealScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MealScalarWhereWithAggregatesInput | Prisma.MealScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Meal"> | string
-  title?: Prisma.StringWithAggregatesFilter<"Meal"> | string
-  content?: Prisma.StringNullableWithAggregatesFilter<"Meal"> | string | null
+  provider_id?: Prisma.StringWithAggregatesFilter<"Meal"> | string
+  category_id?: Prisma.StringWithAggregatesFilter<"Meal"> | string
+  name?: Prisma.StringWithAggregatesFilter<"Meal"> | string
+  description?: Prisma.StringWithAggregatesFilter<"Meal"> | string
+  price?: Prisma.DecimalWithAggregatesFilter<"Meal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeWithAggregatesFilter<"Meal"> | $Enums.DietaryType
+  is_available?: Prisma.BoolWithAggregatesFilter<"Meal"> | boolean
+  created_at?: Prisma.DateTimeWithAggregatesFilter<"Meal"> | Date | string
+  updated_at?: Prisma.DateTimeWithAggregatesFilter<"Meal"> | Date | string
 }
 
 export type MealCreateInput = {
   id?: string
-  title: string
-  content?: string | null
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  provider: Prisma.ProviderCreateNestedOneWithoutMealsInput
+  category: Prisma.CategoriesCreateNestedOneWithoutMealsInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutMealInput
 }
 
 export type MealUncheckedCreateInput = {
   id?: string
-  title: string
-  content?: string | null
+  provider_id: string
+  category_id: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMealInput
 }
 
 export type MealUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.ProviderUpdateOneRequiredWithoutMealsNestedInput
+  category?: Prisma.CategoriesUpdateOneRequiredWithoutMealsNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutMealNestedInput
 }
 
 export type MealUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider_id?: Prisma.StringFieldUpdateOperationsInput | string
+  category_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMealNestedInput
 }
 
 export type MealCreateManyInput = {
   id?: string
-  title: string
-  content?: string | null
+  provider_id: string
+  category_id: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type MealUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MealUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provider_id?: Prisma.StringFieldUpdateOperationsInput | string
+  category_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type MealListRelationFilter = {
+  every?: Prisma.MealWhereInput
+  some?: Prisma.MealWhereInput
+  none?: Prisma.MealWhereInput
+}
+
+export type MealOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type MealCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  provider_id?: Prisma.SortOrder
+  category_id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  dietary_type?: Prisma.SortOrder
+  is_available?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
+}
+
+export type MealAvgOrderByAggregateInput = {
+  price?: Prisma.SortOrder
 }
 
 export type MealMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  provider_id?: Prisma.SortOrder
+  category_id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  dietary_type?: Prisma.SortOrder
+  is_available?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type MealMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  content?: Prisma.SortOrder
+  provider_id?: Prisma.SortOrder
+  category_id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  dietary_type?: Prisma.SortOrder
+  is_available?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
+export type MealSumOrderByAggregateInput = {
+  price?: Prisma.SortOrder
+}
+
+export type MealScalarRelationFilter = {
+  is?: Prisma.MealWhereInput
+  isNot?: Prisma.MealWhereInput
+}
+
+export type MealCreateNestedManyWithoutCategoryInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutCategoryInput, Prisma.MealUncheckedCreateWithoutCategoryInput> | Prisma.MealCreateWithoutCategoryInput[] | Prisma.MealUncheckedCreateWithoutCategoryInput[]
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutCategoryInput | Prisma.MealCreateOrConnectWithoutCategoryInput[]
+  createMany?: Prisma.MealCreateManyCategoryInputEnvelope
+  connect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+}
+
+export type MealUncheckedCreateNestedManyWithoutCategoryInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutCategoryInput, Prisma.MealUncheckedCreateWithoutCategoryInput> | Prisma.MealCreateWithoutCategoryInput[] | Prisma.MealUncheckedCreateWithoutCategoryInput[]
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutCategoryInput | Prisma.MealCreateOrConnectWithoutCategoryInput[]
+  createMany?: Prisma.MealCreateManyCategoryInputEnvelope
+  connect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+}
+
+export type MealUpdateManyWithoutCategoryNestedInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutCategoryInput, Prisma.MealUncheckedCreateWithoutCategoryInput> | Prisma.MealCreateWithoutCategoryInput[] | Prisma.MealUncheckedCreateWithoutCategoryInput[]
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutCategoryInput | Prisma.MealCreateOrConnectWithoutCategoryInput[]
+  upsert?: Prisma.MealUpsertWithWhereUniqueWithoutCategoryInput | Prisma.MealUpsertWithWhereUniqueWithoutCategoryInput[]
+  createMany?: Prisma.MealCreateManyCategoryInputEnvelope
+  set?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  disconnect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  delete?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  connect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  update?: Prisma.MealUpdateWithWhereUniqueWithoutCategoryInput | Prisma.MealUpdateWithWhereUniqueWithoutCategoryInput[]
+  updateMany?: Prisma.MealUpdateManyWithWhereWithoutCategoryInput | Prisma.MealUpdateManyWithWhereWithoutCategoryInput[]
+  deleteMany?: Prisma.MealScalarWhereInput | Prisma.MealScalarWhereInput[]
+}
+
+export type MealUncheckedUpdateManyWithoutCategoryNestedInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutCategoryInput, Prisma.MealUncheckedCreateWithoutCategoryInput> | Prisma.MealCreateWithoutCategoryInput[] | Prisma.MealUncheckedCreateWithoutCategoryInput[]
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutCategoryInput | Prisma.MealCreateOrConnectWithoutCategoryInput[]
+  upsert?: Prisma.MealUpsertWithWhereUniqueWithoutCategoryInput | Prisma.MealUpsertWithWhereUniqueWithoutCategoryInput[]
+  createMany?: Prisma.MealCreateManyCategoryInputEnvelope
+  set?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  disconnect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  delete?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  connect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  update?: Prisma.MealUpdateWithWhereUniqueWithoutCategoryInput | Prisma.MealUpdateWithWhereUniqueWithoutCategoryInput[]
+  updateMany?: Prisma.MealUpdateManyWithWhereWithoutCategoryInput | Prisma.MealUpdateManyWithWhereWithoutCategoryInput[]
+  deleteMany?: Prisma.MealScalarWhereInput | Prisma.MealScalarWhereInput[]
+}
+
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type EnumDietaryTypeFieldUpdateOperationsInput = {
+  set?: $Enums.DietaryType
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type MealCreateNestedManyWithoutProviderInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutProviderInput, Prisma.MealUncheckedCreateWithoutProviderInput> | Prisma.MealCreateWithoutProviderInput[] | Prisma.MealUncheckedCreateWithoutProviderInput[]
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutProviderInput | Prisma.MealCreateOrConnectWithoutProviderInput[]
+  createMany?: Prisma.MealCreateManyProviderInputEnvelope
+  connect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+}
+
+export type MealUncheckedCreateNestedManyWithoutProviderInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutProviderInput, Prisma.MealUncheckedCreateWithoutProviderInput> | Prisma.MealCreateWithoutProviderInput[] | Prisma.MealUncheckedCreateWithoutProviderInput[]
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutProviderInput | Prisma.MealCreateOrConnectWithoutProviderInput[]
+  createMany?: Prisma.MealCreateManyProviderInputEnvelope
+  connect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+}
+
+export type MealUpdateManyWithoutProviderNestedInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutProviderInput, Prisma.MealUncheckedCreateWithoutProviderInput> | Prisma.MealCreateWithoutProviderInput[] | Prisma.MealUncheckedCreateWithoutProviderInput[]
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutProviderInput | Prisma.MealCreateOrConnectWithoutProviderInput[]
+  upsert?: Prisma.MealUpsertWithWhereUniqueWithoutProviderInput | Prisma.MealUpsertWithWhereUniqueWithoutProviderInput[]
+  createMany?: Prisma.MealCreateManyProviderInputEnvelope
+  set?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  disconnect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  delete?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  connect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  update?: Prisma.MealUpdateWithWhereUniqueWithoutProviderInput | Prisma.MealUpdateWithWhereUniqueWithoutProviderInput[]
+  updateMany?: Prisma.MealUpdateManyWithWhereWithoutProviderInput | Prisma.MealUpdateManyWithWhereWithoutProviderInput[]
+  deleteMany?: Prisma.MealScalarWhereInput | Prisma.MealScalarWhereInput[]
+}
+
+export type MealUncheckedUpdateManyWithoutProviderNestedInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutProviderInput, Prisma.MealUncheckedCreateWithoutProviderInput> | Prisma.MealCreateWithoutProviderInput[] | Prisma.MealUncheckedCreateWithoutProviderInput[]
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutProviderInput | Prisma.MealCreateOrConnectWithoutProviderInput[]
+  upsert?: Prisma.MealUpsertWithWhereUniqueWithoutProviderInput | Prisma.MealUpsertWithWhereUniqueWithoutProviderInput[]
+  createMany?: Prisma.MealCreateManyProviderInputEnvelope
+  set?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  disconnect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  delete?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  connect?: Prisma.MealWhereUniqueInput | Prisma.MealWhereUniqueInput[]
+  update?: Prisma.MealUpdateWithWhereUniqueWithoutProviderInput | Prisma.MealUpdateWithWhereUniqueWithoutProviderInput[]
+  updateMany?: Prisma.MealUpdateManyWithWhereWithoutProviderInput | Prisma.MealUpdateManyWithWhereWithoutProviderInput[]
+  deleteMany?: Prisma.MealScalarWhereInput | Prisma.MealScalarWhereInput[]
+}
+
+export type MealCreateNestedOneWithoutReviewsInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutReviewsInput, Prisma.MealUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutReviewsInput
+  connect?: Prisma.MealWhereUniqueInput
+}
+
+export type MealUpdateOneRequiredWithoutReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.MealCreateWithoutReviewsInput, Prisma.MealUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.MealCreateOrConnectWithoutReviewsInput
+  upsert?: Prisma.MealUpsertWithoutReviewsInput
+  connect?: Prisma.MealWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MealUpdateToOneWithWhereWithoutReviewsInput, Prisma.MealUpdateWithoutReviewsInput>, Prisma.MealUncheckedUpdateWithoutReviewsInput>
+}
+
+export type MealCreateWithoutCategoryInput = {
+  id?: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  provider: Prisma.ProviderCreateNestedOneWithoutMealsInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutMealInput
+}
+
+export type MealUncheckedCreateWithoutCategoryInput = {
+  id?: string
+  provider_id: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMealInput
+}
+
+export type MealCreateOrConnectWithoutCategoryInput = {
+  where: Prisma.MealWhereUniqueInput
+  create: Prisma.XOR<Prisma.MealCreateWithoutCategoryInput, Prisma.MealUncheckedCreateWithoutCategoryInput>
+}
+
+export type MealCreateManyCategoryInputEnvelope = {
+  data: Prisma.MealCreateManyCategoryInput | Prisma.MealCreateManyCategoryInput[]
+  skipDuplicates?: boolean
+}
+
+export type MealUpsertWithWhereUniqueWithoutCategoryInput = {
+  where: Prisma.MealWhereUniqueInput
+  update: Prisma.XOR<Prisma.MealUpdateWithoutCategoryInput, Prisma.MealUncheckedUpdateWithoutCategoryInput>
+  create: Prisma.XOR<Prisma.MealCreateWithoutCategoryInput, Prisma.MealUncheckedCreateWithoutCategoryInput>
+}
+
+export type MealUpdateWithWhereUniqueWithoutCategoryInput = {
+  where: Prisma.MealWhereUniqueInput
+  data: Prisma.XOR<Prisma.MealUpdateWithoutCategoryInput, Prisma.MealUncheckedUpdateWithoutCategoryInput>
+}
+
+export type MealUpdateManyWithWhereWithoutCategoryInput = {
+  where: Prisma.MealScalarWhereInput
+  data: Prisma.XOR<Prisma.MealUpdateManyMutationInput, Prisma.MealUncheckedUpdateManyWithoutCategoryInput>
+}
+
+export type MealScalarWhereInput = {
+  AND?: Prisma.MealScalarWhereInput | Prisma.MealScalarWhereInput[]
+  OR?: Prisma.MealScalarWhereInput[]
+  NOT?: Prisma.MealScalarWhereInput | Prisma.MealScalarWhereInput[]
+  id?: Prisma.StringFilter<"Meal"> | string
+  provider_id?: Prisma.StringFilter<"Meal"> | string
+  category_id?: Prisma.StringFilter<"Meal"> | string
+  name?: Prisma.StringFilter<"Meal"> | string
+  description?: Prisma.StringFilter<"Meal"> | string
+  price?: Prisma.DecimalFilter<"Meal"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFilter<"Meal"> | $Enums.DietaryType
+  is_available?: Prisma.BoolFilter<"Meal"> | boolean
+  created_at?: Prisma.DateTimeFilter<"Meal"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"Meal"> | Date | string
+}
+
+export type MealCreateWithoutProviderInput = {
+  id?: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  category: Prisma.CategoriesCreateNestedOneWithoutMealsInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutMealInput
+}
+
+export type MealUncheckedCreateWithoutProviderInput = {
+  id?: string
+  category_id: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMealInput
+}
+
+export type MealCreateOrConnectWithoutProviderInput = {
+  where: Prisma.MealWhereUniqueInput
+  create: Prisma.XOR<Prisma.MealCreateWithoutProviderInput, Prisma.MealUncheckedCreateWithoutProviderInput>
+}
+
+export type MealCreateManyProviderInputEnvelope = {
+  data: Prisma.MealCreateManyProviderInput | Prisma.MealCreateManyProviderInput[]
+  skipDuplicates?: boolean
+}
+
+export type MealUpsertWithWhereUniqueWithoutProviderInput = {
+  where: Prisma.MealWhereUniqueInput
+  update: Prisma.XOR<Prisma.MealUpdateWithoutProviderInput, Prisma.MealUncheckedUpdateWithoutProviderInput>
+  create: Prisma.XOR<Prisma.MealCreateWithoutProviderInput, Prisma.MealUncheckedCreateWithoutProviderInput>
+}
+
+export type MealUpdateWithWhereUniqueWithoutProviderInput = {
+  where: Prisma.MealWhereUniqueInput
+  data: Prisma.XOR<Prisma.MealUpdateWithoutProviderInput, Prisma.MealUncheckedUpdateWithoutProviderInput>
+}
+
+export type MealUpdateManyWithWhereWithoutProviderInput = {
+  where: Prisma.MealScalarWhereInput
+  data: Prisma.XOR<Prisma.MealUpdateManyMutationInput, Prisma.MealUncheckedUpdateManyWithoutProviderInput>
+}
+
+export type MealCreateWithoutReviewsInput = {
+  id?: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  provider: Prisma.ProviderCreateNestedOneWithoutMealsInput
+  category: Prisma.CategoriesCreateNestedOneWithoutMealsInput
+}
+
+export type MealUncheckedCreateWithoutReviewsInput = {
+  id?: string
+  provider_id: string
+  category_id: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type MealCreateOrConnectWithoutReviewsInput = {
+  where: Prisma.MealWhereUniqueInput
+  create: Prisma.XOR<Prisma.MealCreateWithoutReviewsInput, Prisma.MealUncheckedCreateWithoutReviewsInput>
+}
+
+export type MealUpsertWithoutReviewsInput = {
+  update: Prisma.XOR<Prisma.MealUpdateWithoutReviewsInput, Prisma.MealUncheckedUpdateWithoutReviewsInput>
+  create: Prisma.XOR<Prisma.MealCreateWithoutReviewsInput, Prisma.MealUncheckedCreateWithoutReviewsInput>
+  where?: Prisma.MealWhereInput
+}
+
+export type MealUpdateToOneWithWhereWithoutReviewsInput = {
+  where?: Prisma.MealWhereInput
+  data: Prisma.XOR<Prisma.MealUpdateWithoutReviewsInput, Prisma.MealUncheckedUpdateWithoutReviewsInput>
+}
+
+export type MealUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.ProviderUpdateOneRequiredWithoutMealsNestedInput
+  category?: Prisma.CategoriesUpdateOneRequiredWithoutMealsNestedInput
+}
+
+export type MealUncheckedUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider_id?: Prisma.StringFieldUpdateOperationsInput | string
+  category_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type MealCreateManyCategoryInput = {
+  id?: string
+  provider_id: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type MealUpdateWithoutCategoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  provider?: Prisma.ProviderUpdateOneRequiredWithoutMealsNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutMealNestedInput
+}
+
+export type MealUncheckedUpdateWithoutCategoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMealNestedInput
+}
+
+export type MealUncheckedUpdateManyWithoutCategoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type MealCreateManyProviderInput = {
+  id?: string
+  category_id: string
+  name: string
+  description: string
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type: $Enums.DietaryType
+  is_available: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type MealUpdateWithoutProviderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.CategoriesUpdateOneRequiredWithoutMealsNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutMealNestedInput
+}
+
+export type MealUncheckedUpdateWithoutProviderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  category_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutMealNestedInput
+}
+
+export type MealUncheckedUpdateManyWithoutProviderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  category_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dietary_type?: Prisma.EnumDietaryTypeFieldUpdateOperationsInput | $Enums.DietaryType
+  is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type MealCountOutputType
+ */
+
+export type MealCountOutputType = {
+  reviews: number
+}
+
+export type MealCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  reviews?: boolean | MealCountOutputTypeCountReviewsArgs
+}
+
+/**
+ * MealCountOutputType without action
+ */
+export type MealCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MealCountOutputType
+   */
+  select?: Prisma.MealCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * MealCountOutputType without action
+ */
+export type MealCountOutputTypeCountReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReviewWhereInput
+}
 
 
 export type MealSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
-  content?: boolean
+  provider_id?: boolean
+  category_id?: boolean
+  name?: boolean
+  description?: boolean
+  price?: boolean
+  dietary_type?: boolean
+  is_available?: boolean
+  created_at?: boolean
+  updated_at?: boolean
+  provider?: boolean | Prisma.ProviderDefaultArgs<ExtArgs>
+  category?: boolean | Prisma.CategoriesDefaultArgs<ExtArgs>
+  reviews?: boolean | Prisma.Meal$reviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.MealCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["meal"]>
 
 export type MealSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
-  content?: boolean
+  provider_id?: boolean
+  category_id?: boolean
+  name?: boolean
+  description?: boolean
+  price?: boolean
+  dietary_type?: boolean
+  is_available?: boolean
+  created_at?: boolean
+  updated_at?: boolean
+  provider?: boolean | Prisma.ProviderDefaultArgs<ExtArgs>
+  category?: boolean | Prisma.CategoriesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["meal"]>
 
 export type MealSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  title?: boolean
-  content?: boolean
+  provider_id?: boolean
+  category_id?: boolean
+  name?: boolean
+  description?: boolean
+  price?: boolean
+  dietary_type?: boolean
+  is_available?: boolean
+  created_at?: boolean
+  updated_at?: boolean
+  provider?: boolean | Prisma.ProviderDefaultArgs<ExtArgs>
+  category?: boolean | Prisma.CategoriesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["meal"]>
 
 export type MealSelectScalar = {
   id?: boolean
-  title?: boolean
-  content?: boolean
+  provider_id?: boolean
+  category_id?: boolean
+  name?: boolean
+  description?: boolean
+  price?: boolean
+  dietary_type?: boolean
+  is_available?: boolean
+  created_at?: boolean
+  updated_at?: boolean
 }
 
-export type MealOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "content", ExtArgs["result"]["meal"]>
+export type MealOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "provider_id" | "category_id" | "name" | "description" | "price" | "dietary_type" | "is_available" | "created_at" | "updated_at", ExtArgs["result"]["meal"]>
+export type MealInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  provider?: boolean | Prisma.ProviderDefaultArgs<ExtArgs>
+  category?: boolean | Prisma.CategoriesDefaultArgs<ExtArgs>
+  reviews?: boolean | Prisma.Meal$reviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.MealCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type MealIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  provider?: boolean | Prisma.ProviderDefaultArgs<ExtArgs>
+  category?: boolean | Prisma.CategoriesDefaultArgs<ExtArgs>
+}
+export type MealIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  provider?: boolean | Prisma.ProviderDefaultArgs<ExtArgs>
+  category?: boolean | Prisma.CategoriesDefaultArgs<ExtArgs>
+}
 
 export type $MealPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Meal"
-  objects: {}
+  objects: {
+    provider: Prisma.$ProviderPayload<ExtArgs>
+    category: Prisma.$CategoriesPayload<ExtArgs>
+    reviews: Prisma.$ReviewPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    title: string
-    content: string | null
+    provider_id: string
+    category_id: string
+    name: string
+    description: string
+    price: runtime.Decimal
+    dietary_type: $Enums.DietaryType
+    is_available: boolean
+    created_at: Date
+    updated_at: Date
   }, ExtArgs["result"]["meal"]>
   composites: {}
 }
@@ -690,6 +1406,9 @@ readonly fields: MealFieldRefs;
  */
 export interface Prisma__MealClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  provider<T extends Prisma.ProviderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderDefaultArgs<ExtArgs>>): Prisma.Prisma__ProviderClient<runtime.Types.Result.GetResult<Prisma.$ProviderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  category<T extends Prisma.CategoriesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CategoriesDefaultArgs<ExtArgs>>): Prisma.Prisma__CategoriesClient<runtime.Types.Result.GetResult<Prisma.$CategoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  reviews<T extends Prisma.Meal$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Meal$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -720,8 +1439,15 @@ export interface Prisma__MealClient<T, Null = never, ExtArgs extends runtime.Typ
  */
 export interface MealFieldRefs {
   readonly id: Prisma.FieldRef<"Meal", 'String'>
-  readonly title: Prisma.FieldRef<"Meal", 'String'>
-  readonly content: Prisma.FieldRef<"Meal", 'String'>
+  readonly provider_id: Prisma.FieldRef<"Meal", 'String'>
+  readonly category_id: Prisma.FieldRef<"Meal", 'String'>
+  readonly name: Prisma.FieldRef<"Meal", 'String'>
+  readonly description: Prisma.FieldRef<"Meal", 'String'>
+  readonly price: Prisma.FieldRef<"Meal", 'Decimal'>
+  readonly dietary_type: Prisma.FieldRef<"Meal", 'DietaryType'>
+  readonly is_available: Prisma.FieldRef<"Meal", 'Boolean'>
+  readonly created_at: Prisma.FieldRef<"Meal", 'DateTime'>
+  readonly updated_at: Prisma.FieldRef<"Meal", 'DateTime'>
 }
     
 
@@ -738,6 +1464,10 @@ export type MealFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Meal
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
   /**
    * Filter, which Meal to fetch.
    */
@@ -757,6 +1487,10 @@ export type MealFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
+  /**
    * Filter, which Meal to fetch.
    */
   where: Prisma.MealWhereUniqueInput
@@ -774,6 +1508,10 @@ export type MealFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Meal
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
   /**
    * Filter, which Meal to fetch.
    */
@@ -823,6 +1561,10 @@ export type MealFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
+  /**
    * Filter, which Meal to fetch.
    */
   where?: Prisma.MealWhereInput
@@ -871,6 +1613,10 @@ export type MealFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
+  /**
    * Filter, which Meals to fetch.
    */
   where?: Prisma.MealWhereInput
@@ -914,6 +1660,10 @@ export type MealCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
+  /**
    * The data needed to create a Meal.
    */
   data: Prisma.XOR<Prisma.MealCreateInput, Prisma.MealUncheckedCreateInput>
@@ -947,6 +1697,10 @@ export type MealCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   data: Prisma.MealCreateManyInput | Prisma.MealCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -961,6 +1715,10 @@ export type MealUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the Meal
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
   /**
    * The data needed to update a Meal.
    */
@@ -1013,6 +1771,10 @@ export type MealUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Meals to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1027,6 +1789,10 @@ export type MealUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the Meal
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
   /**
    * The filter to search for the Meal to update in case it exists.
    */
@@ -1054,6 +1820,10 @@ export type MealDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
+  /**
    * Filter which Meal to delete.
    */
   where: Prisma.MealWhereUniqueInput
@@ -1074,6 +1844,30 @@ export type MealDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
+ * Meal.reviews
+ */
+export type Meal$reviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Review
+   */
+  select?: Prisma.ReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Review
+   */
+  omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  where?: Prisma.ReviewWhereInput
+  orderBy?: Prisma.ReviewOrderByWithRelationInput | Prisma.ReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
+}
+
+/**
  * Meal without action
  */
 export type MealDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1085,4 +1879,8 @@ export type MealDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Omit specific fields from the Meal
    */
   omit?: Prisma.MealOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MealInclude<ExtArgs> | null
 }

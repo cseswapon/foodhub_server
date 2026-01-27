@@ -4,7 +4,6 @@ import { betterAuth, string } from "better-auth";
 
 import { prismaAdapter } from "better-auth/adapters/prisma";
 
-
 export const auth = betterAuth({
   rateLimit: {
     enabled: true,
@@ -33,9 +32,9 @@ export const auth = betterAuth({
         required: false,
       },
       status: {
-        type: ["active", "suspend"],
+        type: ["activate", "suspend"],
         required: false,
-        defaultValue: "active",
+        defaultValue: "activate",
       },
     },
   },

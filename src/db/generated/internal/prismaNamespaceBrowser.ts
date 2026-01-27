@@ -54,7 +54,12 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  Categories: 'Categories',
   Meal: 'Meal',
+  Order: 'Order',
+  Order_Item: 'Order_Item',
+  Provider: 'Provider',
+  Review: 'Review',
   User: 'User'
 } as const
 
@@ -119,13 +124,79 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
+export const CategoriesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CategoriesScalarFieldEnum = (typeof CategoriesScalarFieldEnum)[keyof typeof CategoriesScalarFieldEnum]
+
+
 export const MealScalarFieldEnum = {
   id: 'id',
-  title: 'title',
-  content: 'content'
+  provider_id: 'provider_id',
+  category_id: 'category_id',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  dietary_type: 'dietary_type',
+  is_available: 'is_available',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type MealScalarFieldEnum = (typeof MealScalarFieldEnum)[keyof typeof MealScalarFieldEnum]
+
+
+export const OrderScalarFieldEnum = {
+  id: 'id',
+  customer_id: 'customer_id',
+  provider_id: 'provider_id',
+  total_price: 'total_price',
+  delivery_address: 'delivery_address',
+  payment_method: 'payment_method',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
+
+
+export const Order_ItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId'
+} as const
+
+export type Order_ItemScalarFieldEnum = (typeof Order_ItemScalarFieldEnum)[keyof typeof Order_ItemScalarFieldEnum]
+
+
+export const ProviderScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  restaurant_name: 'restaurant_name',
+  description: 'description',
+  address: 'address',
+  is_open: 'is_open',
+  fb_link: 'fb_link',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ProviderScalarFieldEnum = (typeof ProviderScalarFieldEnum)[keyof typeof ProviderScalarFieldEnum]
+
+
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  meal_id: 'meal_id',
+  rating: 'rating',
+  user_id: 'user_id',
+  userId: 'userId'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
