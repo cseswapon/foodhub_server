@@ -336,7 +336,7 @@ export type MealCreateInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   provider: Prisma.ProviderCreateNestedOneWithoutMealsInput
@@ -352,7 +352,7 @@ export type MealUncheckedCreateInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMealInput
@@ -394,7 +394,7 @@ export type MealCreateManyInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -605,7 +605,7 @@ export type MealCreateWithoutCategoryInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   provider: Prisma.ProviderCreateNestedOneWithoutMealsInput
@@ -619,7 +619,7 @@ export type MealUncheckedCreateWithoutCategoryInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMealInput
@@ -673,7 +673,7 @@ export type MealCreateWithoutProviderInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   category: Prisma.CategoriesCreateNestedOneWithoutMealsInput
@@ -687,7 +687,7 @@ export type MealUncheckedCreateWithoutProviderInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutMealInput
@@ -725,7 +725,7 @@ export type MealCreateWithoutReviewsInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   provider: Prisma.ProviderCreateNestedOneWithoutMealsInput
@@ -740,7 +740,7 @@ export type MealUncheckedCreateWithoutReviewsInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -794,7 +794,7 @@ export type MealCreateManyCategoryInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -844,7 +844,7 @@ export type MealCreateManyProviderInput = {
   description: string
   price: runtime.Decimal | runtime.DecimalJsLike | number | string
   dietary_type: $Enums.DietaryType
-  is_available: boolean
+  is_available?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }

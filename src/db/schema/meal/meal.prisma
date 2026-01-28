@@ -9,9 +9,9 @@ model Meal {
 
     name         String
     description  String
-    price        Decimal
+    price        Decimal     @db.Decimal(10, 2)
     dietary_type DietaryType
-    is_available Boolean
+    is_available Boolean     @default(true)
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
