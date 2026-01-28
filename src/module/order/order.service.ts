@@ -130,7 +130,12 @@ export class OrderService {
     return result;
   };
 
-  updateOrder = async (id: string,data: Prisma.OrderUpdateInput) => {
+  updateOrder = async (
+    id: string,
+    data: Prisma.OrderUpdateInput,
+    role: "customer" | "provider" | "admin",
+    userId: string,
+  ) => {
     const order = await this.db.order.findUnique({
       where: { id },
     });
@@ -138,13 +143,40 @@ export class OrderService {
     if (!order) {
       throw new Error("Order not found");
     }
-    const orders = await this.db.order.update({
-      where: {
-        id,
+
+    if (role === "customer") {
+      if (data.status !== "cancelled") {
+        throw new Error("Customer can only cancel orders");
+      }
+
+      if (!["pending", "accepted"].includes(order.status)) {
+        throw new Error("Order can’t be cancelled at this stage");
+      }
+
+      if (order.user_id !== userId) {
+        throw new Error("Unauthorized order access");
+      }
+    }
+    if (role === "provider") {
+      if (
+        !["accepted", "preparing", "out_for_delivery", "delivered"].includes(
+          data.status as string,
+        )
+      ) {
+        throw new Error("Invalid status update by provider");
+      }
+
+      if (order.provider_id !== userId) {
+        throw new Error("Unauthorized provider access");
+      }
+    }
+    return this.db.order.update({
+      where: { id },
+      data: {
+        ...data,
+        cancelled_by: data.status === "cancelled" ? role : null,
       },
-      data,
     });
-    return orders;
   };
 
   deleteOrder = async (id: string) => {

@@ -47,19 +47,23 @@ export class OrdersController {
     },
   );
 
-  updateOrder = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const { id } = req.params;
-      const result = await this.providerService.updateOrder(id as string, req.body);
+  updateOrder = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
 
-      sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Order updated successfully",
-        data: result,
-      });
-    },
-  );
+    const result = await this.providerService.updateOrder(
+      id as string,
+      req.body,
+      req.user.role as "customer" | "provider" | "admin",
+      req.user.id as string,
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Order updated successfully",
+      data: result,
+    });
+  });
 
   deleteOrder = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {

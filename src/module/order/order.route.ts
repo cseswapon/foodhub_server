@@ -27,7 +27,7 @@ router.post(
 // order status change with provider
 router.patch(
   "/:id",
-  authGuard("provider"),
+  authGuard("provider", "customer", "admin"),
   providerController.updateOrder.bind(providerController),
 );
 

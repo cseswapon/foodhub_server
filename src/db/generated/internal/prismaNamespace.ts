@@ -1271,6 +1271,7 @@ export const OrderScalarFieldEnum = {
   delivery_address: 'delivery_address',
   payment_method: 'payment_method',
   status: 'status',
+  cancelled_by: 'cancelled_by',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

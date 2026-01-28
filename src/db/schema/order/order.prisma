@@ -10,7 +10,8 @@ model Order {
     delivery_address String
     payment_method   PaymentMethod
 
-    status OrderStatus
+    status      OrderStatus
+    cancelled_by String?
 
     created_at DateTime     @default(now())
     updated_at DateTime     @updatedAt()
