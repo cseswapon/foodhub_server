@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { sendResponse } from "@/utils/sendResponse";
 import { ReviewService } from "./review.service";
+import { UserRole } from "@/db/generated/enums";
 export class ReviewsController {
   private reviewService = new ReviewService();
 
@@ -36,7 +37,17 @@ export class ReviewsController {
 
   createReview = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      const result = await this.reviewService.createReview(req.body);
+      const {
+        mealId,
+        rating,
+        comment,
+      }: { mealId: string; rating: number; comment?: string } = req.body;
+      const result = await this.reviewService.createReview(
+        req.user.id as string,
+        mealId,
+        rating,
+        comment,
+      );
 
       sendResponse(res, {
         statusCode: httpStatus.CREATED,
@@ -50,7 +61,12 @@ export class ReviewsController {
   updateReview = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const { id } = req.params;
-      const result = await this.reviewService.updateReview(id as string, req.body);
+      const result = await this.reviewService.updateReview(
+        id as string,
+        req.user.id as string,
+        req.user.role as UserRole,
+        req.body,
+      );
 
       sendResponse(res, {
         statusCode: httpStatus.OK,

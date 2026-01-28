@@ -130,7 +130,14 @@ export class OrderService {
     return result;
   };
 
-  updateOrder = async (id: string, data: Prisma.OrderUpdateInput) => {
+  updateOrder = async (id: string,data: Prisma.OrderUpdateInput) => {
+    const order = await this.db.order.findUnique({
+      where: { id },
+    });
+
+    if (!order) {
+      throw new Error("Order not found");
+    }
     const orders = await this.db.order.update({
       where: {
         id,

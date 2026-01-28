@@ -43,21 +43,70 @@ export class ReviewService {
     return review;
   };
 
-  createReview = async (data: Prisma.ReviewCreateInput) => {
-    const result = await this.db.review.create({
-      data,
+  createReview = async (
+    userId: string,
+    mealId: string,
+    rating: number,
+    comment?: string,
+  ) => {
+    const orderItem = await this.db.order_Item.findFirst({
+      where: {
+        meal_id: mealId,
+        order: {
+          user_id: userId,
+          status: "delivered",
+        },
+      },
     });
-    return result;
+
+    if (!orderItem) {
+      throw new Error("You can review only after ordering this meal");
+    }
+
+    const alreadyReviewed = await this.db.review.findFirst({
+      where: {
+        user_id: userId,
+        meal_id: mealId,
+      },
+    });
+
+    if (alreadyReviewed) {
+      throw new Error("You have already reviewed this meal");
+    }
+
+    return this.db.review.create({
+      data: {
+        user: { connect: { id: userId } },
+        meal: { connect: { id: mealId } },
+        rating,
+        comment: comment ?? null,
+        is_visible: true,
+      },
+    });
   };
 
-  updateReview = async (id: string, data: Prisma.ReviewUpdateInput) => {
-    const reviews = await this.db.review.update({
-      where: {
-        id,
-      },
+  updateReview = async (
+    reviewId: string,
+    userId: string,
+    role: string,
+    data: Prisma.ReviewUpdateInput,
+  ) => {
+    const review = await this.db.review.findUnique({
+      where: { id: reviewId },
+    });
+
+    if (!review) {
+      throw new Error("Review not found");
+    }
+
+    if (role === "customer" && review.user_id !== userId) {
+      throw new Error("You are not allowed to update this review");
+    }
+
+    return this.db.review.update({
+      where: { id: reviewId },
       data,
     });
-    return reviews;
   };
 
   deleteReview = async (id: string) => {

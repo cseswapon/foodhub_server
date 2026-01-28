@@ -6,8 +6,10 @@ model Review {
 
     rating Int
 
+    comment String?
+
     user_id String
-    user    User    @relation(fields: [user_id], references: [id])
+    user    User   @relation(fields: [user_id], references: [id])
 
     is_visible Boolean @default(true)
 

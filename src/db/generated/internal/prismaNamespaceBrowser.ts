@@ -195,6 +195,7 @@ export const ReviewScalarFieldEnum = {
   id: 'id',
   meal_id: 'meal_id',
   rating: 'rating',
+  comment: 'comment',
   user_id: 'user_id',
   is_visible: 'is_visible',
   created_at: 'created_at',
