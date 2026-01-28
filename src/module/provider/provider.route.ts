@@ -7,12 +7,12 @@ const providerController = new ProvidersController();
 
 router.get(
   "/all",
-  authGuard(),
+  authGuard("admin"),
   providerController.getAllProviders.bind(providerController),
 );
 
 router.get(
-  "/:id",
+  "/profile",
   authGuard(),
   providerController.getSingleProvider.bind(providerController),
 );
@@ -24,7 +24,7 @@ router.post(
 );
 
 router.patch(
-  "/:id",
+  "/",
   authGuard("provider", "admin"),
   providerController.updateProvider.bind(providerController),
 );

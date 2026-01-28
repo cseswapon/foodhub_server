@@ -32,9 +32,9 @@ export class ProviderService {
   };
 
   getIdProvider = async (id: string) => {
-    const provider = await this.db.provider.findFirst({
+    const provider = await this.db.provider.findMany({
       where: {
-        id,
+        user_id: id,
       },
     });
     return provider;
@@ -59,10 +59,12 @@ export class ProviderService {
     return result;
   };
 
-  updateProvider = async (id: string, data: Prisma.ProviderUpdateInput) => {
+  updateProvider = async (id: string, data: any, name: string) => {
+    console.log("id=>", id, "data=>", data);
     const providers = await this.db.provider.update({
       where: {
-        id,
+        user_id: id as string,
+        restaurant_name: name,
       },
       data,
     });

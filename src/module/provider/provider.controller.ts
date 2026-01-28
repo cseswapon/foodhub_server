@@ -23,8 +23,9 @@ export class ProvidersController {
 
   getSingleProvider = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      const { id } = req.params;
-      const result = await this.providerService.getIdProvider(id as string);
+      const result = await this.providerService.getIdProvider(
+        req.user.id as string,
+      );
 
       sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -36,9 +37,12 @@ export class ProvidersController {
   );
 
   createProvider = catchAsync(
-    async (req: Request,res: Response,next: NextFunction) => {
+    async (req: Request, res: Response, next: NextFunction) => {
       const userId = req.user.id as string;
-      const result = await this.providerService.createProvider(req.body,userId);
+      const result = await this.providerService.createProvider(
+        req.body,
+        userId,
+      );
 
       sendResponse(res, {
         statusCode: httpStatus.CREATED,
@@ -51,8 +55,11 @@ export class ProvidersController {
 
   updateProvider = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      const { id } = req.params;
-      const result = await this.providerService.updateProvider(id as string, req.body);
+      const result = await this.providerService.updateProvider(
+        req.user.id as string,
+        req.body,
+        req.query.name as string,
+      );
 
       sendResponse(res, {
         statusCode: httpStatus.OK,
