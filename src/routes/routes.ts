@@ -6,6 +6,7 @@ import providerRoute from "@/module/provider/provider.route";
 import mealRoute from "@/module/meal/meal.route";
 import orderRoute from "@/module/order/order.route";
 import reviewRoute from "@/module/review/review.route";
+import dashboardRoute from "@/module/dashboard/dashboard.route";
 
 const router: Router = express.Router();
 
@@ -40,6 +41,10 @@ const moduleRouter: IRoute[] = [
   {
     path: `${apiVersion}/review`,
     route: reviewRoute,
+  },
+  {
+    path: `${apiVersion}/dashboard`,
+    route: dashboardRoute,
   },
 ];
 
