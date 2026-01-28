@@ -12,6 +12,9 @@ export class ReviewService {
     const total_page = Math.ceil(total / limit);
 
     const reviews = await this.db.review.findMany({
+      where: {
+        is_visible: true,
+      },
       take: limit,
       skip: skip,
       orderBy: {
