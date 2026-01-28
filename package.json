@@ -4,7 +4,7 @@
   "description": "`Food Hub Backend`",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch ./src/server.ts",
+    "start:dev": "tsx watch ./src/server.ts",
     "build": "tsc",
     "seeding:admin": "tsx ./src/scripts/adminSeeding.ts",
     "migrate": "npx prisma migrate dev",
