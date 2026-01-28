@@ -6,7 +6,7 @@ const router: Router = express.Router();
 const providerController = new MealsController();
 
 router.get(
-  "/all",
+  "/",
   authGuard(),
   providerController.getAllMeals.bind(providerController),
 );

@@ -1,5 +1,6 @@
 import { db as Database } from "@/db";
-import { Prisma } from "@/db/generated/client";
+import { DietaryType, Prisma } from "@/db/generated/client";
+import { MealWhereInput } from "@/db/generated/models";
 import { getPagination } from "@/utils/pagination";
 import { Request } from "express";
 
@@ -7,11 +8,62 @@ export class MealService {
   private readonly db = Database;
 
   getMeal = async (req: Request) => {
-    const total = await this.db.meal.count();
+    const search = req.query.search as string;
+    const maxPrice = req.query.maxPrice as string;
+    const minPrice = req.query.minPrice as string;
+    const type = req.query.type as string;
+
+    const filterWhere: Array<MealWhereInput> = [];
+
+    if (search) {
+      filterWhere.push({
+        OR: [
+          {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            description: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        ],
+      });
+    }
+
+    if (minPrice || maxPrice) {
+      filterWhere.push({
+        price: {
+          ...(minPrice && { gte: Number(minPrice) }),
+          ...(maxPrice && { lte: Number(maxPrice) }),
+        },
+      });
+    }
+
+    if (type) {
+      filterWhere.push({
+        dietary_type: {
+          in: type.split(",") as DietaryType[],
+        },
+      });
+    }
+
+    const total = await this.db.meal.count({
+      where: {
+        AND: filterWhere,
+      },
+    });
+
     const { page, limit, skip } = getPagination(req);
     const total_page = Math.ceil(total / limit);
 
     const meals = await this.db.meal.findMany({
+      where: {
+        AND: filterWhere,
+      },
       take: limit,
       skip: skip,
       orderBy: {
