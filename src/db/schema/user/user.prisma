@@ -12,7 +12,7 @@ model User {
   status        UserStatus @default(activate)
   sessions      Session[]
   accounts      Account[]
-  provider      Provider?
+  provider      Provider[]
   orders        Order[]
   reviews       Review[]
 

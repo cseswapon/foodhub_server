@@ -36,8 +36,9 @@ export class ProvidersController {
   );
 
   createProvider = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const result = await this.providerService.createProvider(req.body);
+    async (req: Request,res: Response,next: NextFunction) => {
+      const userId = req.user.id as string;
+      const result = await this.providerService.createProvider(req.body,userId);
 
       sendResponse(res, {
         statusCode: httpStatus.CREATED,

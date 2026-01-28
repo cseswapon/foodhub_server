@@ -236,11 +236,11 @@ export type ProviderOrderByWithRelationInput = {
 
 export type ProviderWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  user_id?: string
+  restaurant_name?: string
   AND?: Prisma.ProviderWhereInput | Prisma.ProviderWhereInput[]
   OR?: Prisma.ProviderWhereInput[]
   NOT?: Prisma.ProviderWhereInput | Prisma.ProviderWhereInput[]
-  restaurant_name?: Prisma.StringFilter<"Provider"> | string
+  user_id?: Prisma.StringFilter<"Provider"> | string
   description?: Prisma.StringFilter<"Provider"> | string
   address?: Prisma.StringFilter<"Provider"> | string
   is_open?: Prisma.BoolFilter<"Provider"> | boolean
@@ -250,7 +250,7 @@ export type ProviderWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   meals?: Prisma.MealListRelationFilter
   orders?: Prisma.OrderListRelationFilter
-}, "id" | "user_id">
+}, "id" | "restaurant_name">
 
 export type ProviderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -287,7 +287,7 @@ export type ProviderCreateInput = {
   restaurant_name: string
   description: string
   address: string
-  is_open: boolean
+  is_open?: boolean
   fb_link: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -302,7 +302,7 @@ export type ProviderUncheckedCreateInput = {
   restaurant_name: string
   description: string
   address: string
-  is_open: boolean
+  is_open?: boolean
   fb_link: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -344,7 +344,7 @@ export type ProviderCreateManyInput = {
   restaurant_name: string
   description: string
   address: string
-  is_open: boolean
+  is_open?: boolean
   fb_link: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -414,9 +414,14 @@ export type ProviderMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
-export type ProviderNullableScalarRelationFilter = {
-  is?: Prisma.ProviderWhereInput | null
-  isNot?: Prisma.ProviderWhereInput | null
+export type ProviderListRelationFilter = {
+  every?: Prisma.ProviderWhereInput
+  some?: Prisma.ProviderWhereInput
+  none?: Prisma.ProviderWhereInput
+}
+
+export type ProviderOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ProviderCreateNestedOneWithoutMealsInput = {
@@ -447,36 +452,46 @@ export type ProviderUpdateOneRequiredWithoutOrdersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderUpdateToOneWithWhereWithoutOrdersInput, Prisma.ProviderUpdateWithoutOrdersInput>, Prisma.ProviderUncheckedUpdateWithoutOrdersInput>
 }
 
-export type ProviderCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.ProviderCreateOrConnectWithoutUserInput
-  connect?: Prisma.ProviderWhereUniqueInput
+export type ProviderCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput> | Prisma.ProviderCreateWithoutUserInput[] | Prisma.ProviderUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ProviderCreateOrConnectWithoutUserInput | Prisma.ProviderCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.ProviderCreateManyUserInputEnvelope
+  connect?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
 }
 
-export type ProviderUncheckedCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.ProviderCreateOrConnectWithoutUserInput
-  connect?: Prisma.ProviderWhereUniqueInput
+export type ProviderUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput> | Prisma.ProviderCreateWithoutUserInput[] | Prisma.ProviderUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ProviderCreateOrConnectWithoutUserInput | Prisma.ProviderCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.ProviderCreateManyUserInputEnvelope
+  connect?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
 }
 
-export type ProviderUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.ProviderCreateOrConnectWithoutUserInput
-  upsert?: Prisma.ProviderUpsertWithoutUserInput
-  disconnect?: Prisma.ProviderWhereInput | boolean
-  delete?: Prisma.ProviderWhereInput | boolean
-  connect?: Prisma.ProviderWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderUpdateToOneWithWhereWithoutUserInput, Prisma.ProviderUpdateWithoutUserInput>, Prisma.ProviderUncheckedUpdateWithoutUserInput>
+export type ProviderUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput> | Prisma.ProviderCreateWithoutUserInput[] | Prisma.ProviderUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ProviderCreateOrConnectWithoutUserInput | Prisma.ProviderCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.ProviderUpsertWithWhereUniqueWithoutUserInput | Prisma.ProviderUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.ProviderCreateManyUserInputEnvelope
+  set?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
+  disconnect?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
+  delete?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
+  connect?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
+  update?: Prisma.ProviderUpdateWithWhereUniqueWithoutUserInput | Prisma.ProviderUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.ProviderUpdateManyWithWhereWithoutUserInput | Prisma.ProviderUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.ProviderScalarWhereInput | Prisma.ProviderScalarWhereInput[]
 }
 
-export type ProviderUncheckedUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.ProviderCreateOrConnectWithoutUserInput
-  upsert?: Prisma.ProviderUpsertWithoutUserInput
-  disconnect?: Prisma.ProviderWhereInput | boolean
-  delete?: Prisma.ProviderWhereInput | boolean
-  connect?: Prisma.ProviderWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderUpdateToOneWithWhereWithoutUserInput, Prisma.ProviderUpdateWithoutUserInput>, Prisma.ProviderUncheckedUpdateWithoutUserInput>
+export type ProviderUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput> | Prisma.ProviderCreateWithoutUserInput[] | Prisma.ProviderUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ProviderCreateOrConnectWithoutUserInput | Prisma.ProviderCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.ProviderUpsertWithWhereUniqueWithoutUserInput | Prisma.ProviderUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.ProviderCreateManyUserInputEnvelope
+  set?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
+  disconnect?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
+  delete?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
+  connect?: Prisma.ProviderWhereUniqueInput | Prisma.ProviderWhereUniqueInput[]
+  update?: Prisma.ProviderUpdateWithWhereUniqueWithoutUserInput | Prisma.ProviderUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.ProviderUpdateManyWithWhereWithoutUserInput | Prisma.ProviderUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.ProviderScalarWhereInput | Prisma.ProviderScalarWhereInput[]
 }
 
 export type ProviderCreateWithoutMealsInput = {
@@ -484,7 +499,7 @@ export type ProviderCreateWithoutMealsInput = {
   restaurant_name: string
   description: string
   address: string
-  is_open: boolean
+  is_open?: boolean
   fb_link: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -498,7 +513,7 @@ export type ProviderUncheckedCreateWithoutMealsInput = {
   restaurant_name: string
   description: string
   address: string
-  is_open: boolean
+  is_open?: boolean
   fb_link: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -552,7 +567,7 @@ export type ProviderCreateWithoutOrdersInput = {
   restaurant_name: string
   description: string
   address: string
-  is_open: boolean
+  is_open?: boolean
   fb_link: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -566,7 +581,7 @@ export type ProviderUncheckedCreateWithoutOrdersInput = {
   restaurant_name: string
   description: string
   address: string
-  is_open: boolean
+  is_open?: boolean
   fb_link: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -620,7 +635,7 @@ export type ProviderCreateWithoutUserInput = {
   restaurant_name: string
   description: string
   address: string
-  is_open: boolean
+  is_open?: boolean
   fb_link: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -633,7 +648,7 @@ export type ProviderUncheckedCreateWithoutUserInput = {
   restaurant_name: string
   description: string
   address: string
-  is_open: boolean
+  is_open?: boolean
   fb_link: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -646,15 +661,51 @@ export type ProviderCreateOrConnectWithoutUserInput = {
   create: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput>
 }
 
-export type ProviderUpsertWithoutUserInput = {
-  update: Prisma.XOR<Prisma.ProviderUpdateWithoutUserInput, Prisma.ProviderUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput>
-  where?: Prisma.ProviderWhereInput
+export type ProviderCreateManyUserInputEnvelope = {
+  data: Prisma.ProviderCreateManyUserInput | Prisma.ProviderCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
-export type ProviderUpdateToOneWithWhereWithoutUserInput = {
-  where?: Prisma.ProviderWhereInput
+export type ProviderUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ProviderWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProviderUpdateWithoutUserInput, Prisma.ProviderUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.ProviderCreateWithoutUserInput, Prisma.ProviderUncheckedCreateWithoutUserInput>
+}
+
+export type ProviderUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ProviderWhereUniqueInput
   data: Prisma.XOR<Prisma.ProviderUpdateWithoutUserInput, Prisma.ProviderUncheckedUpdateWithoutUserInput>
+}
+
+export type ProviderUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.ProviderScalarWhereInput
+  data: Prisma.XOR<Prisma.ProviderUpdateManyMutationInput, Prisma.ProviderUncheckedUpdateManyWithoutUserInput>
+}
+
+export type ProviderScalarWhereInput = {
+  AND?: Prisma.ProviderScalarWhereInput | Prisma.ProviderScalarWhereInput[]
+  OR?: Prisma.ProviderScalarWhereInput[]
+  NOT?: Prisma.ProviderScalarWhereInput | Prisma.ProviderScalarWhereInput[]
+  id?: Prisma.StringFilter<"Provider"> | string
+  user_id?: Prisma.StringFilter<"Provider"> | string
+  restaurant_name?: Prisma.StringFilter<"Provider"> | string
+  description?: Prisma.StringFilter<"Provider"> | string
+  address?: Prisma.StringFilter<"Provider"> | string
+  is_open?: Prisma.BoolFilter<"Provider"> | boolean
+  fb_link?: Prisma.StringFilter<"Provider"> | string
+  created_at?: Prisma.DateTimeFilter<"Provider"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"Provider"> | Date | string
+}
+
+export type ProviderCreateManyUserInput = {
+  id?: string
+  restaurant_name: string
+  description: string
+  address: string
+  is_open?: boolean
+  fb_link: string
+  created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type ProviderUpdateWithoutUserInput = {
@@ -681,6 +732,17 @@ export type ProviderUncheckedUpdateWithoutUserInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealUncheckedUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutProviderNestedInput
+}
+
+export type ProviderUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  restaurant_name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  is_open?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fb_link?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 

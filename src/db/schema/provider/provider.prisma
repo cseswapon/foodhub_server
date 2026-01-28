@@ -4,10 +4,10 @@ model Provider {
     user_id String
     user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-    restaurant_name String
+    restaurant_name String  @unique()
     description     String
     address         String
-    is_open         Boolean
+    is_open         Boolean @default(true)
 
     fb_link String
 
@@ -17,6 +17,5 @@ model Provider {
     meals  Meal[]
     orders Order[]
 
-    @@unique([user_id])
     @@map("providers")
 }

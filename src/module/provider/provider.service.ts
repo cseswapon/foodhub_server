@@ -40,9 +40,21 @@ export class ProviderService {
     return provider;
   };
 
-  createProvider = async (data: Prisma.ProviderCreateInput) => {
+  createProvider = async (
+    data: Omit<Prisma.ProviderCreateInput, "user">,
+    userId: string,
+  ) => {
+    // console.log({...data,userId});
     const result = await this.db.provider.create({
-      data,
+      data: {
+        ...data,
+        user_id: userId,
+        //   user: {
+        //     connect: {
+        //       id: userId
+        //     }
+        //   }
+      },
     });
     return result;
   };
