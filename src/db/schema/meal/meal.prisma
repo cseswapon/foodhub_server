@@ -16,6 +16,7 @@ model Meal {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
+    orderItems Order_Item[]
     reviews Review[]
 
     @@index([dietary_type])

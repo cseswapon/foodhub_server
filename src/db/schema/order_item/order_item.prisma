@@ -1,7 +1,13 @@
 model Order_Item {
     id      String @id @default(uuid())
-    order   Order  @relation(fields: [orderId], references: [id])
     orderId String
+    order   Order  @relation(fields: [orderId], references: [id])
+
+    meal_id String
+    meal    Meal   @relation(fields: [meal_id], references: [id])
+
+    quantity Int
+    price    Decimal @db.Decimal(10, 2)
 
     @@map("order_items")
 }

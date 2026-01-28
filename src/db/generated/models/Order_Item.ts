@@ -20,40 +20,80 @@ export type Order_ItemModel = runtime.Types.Result.DefaultSelection<Prisma.$Orde
 
 export type AggregateOrder_Item = {
   _count: Order_ItemCountAggregateOutputType | null
+  _avg: Order_ItemAvgAggregateOutputType | null
+  _sum: Order_ItemSumAggregateOutputType | null
   _min: Order_ItemMinAggregateOutputType | null
   _max: Order_ItemMaxAggregateOutputType | null
+}
+
+export type Order_ItemAvgAggregateOutputType = {
+  quantity: number | null
+  price: runtime.Decimal | null
+}
+
+export type Order_ItemSumAggregateOutputType = {
+  quantity: number | null
+  price: runtime.Decimal | null
 }
 
 export type Order_ItemMinAggregateOutputType = {
   id: string | null
   orderId: string | null
+  meal_id: string | null
+  quantity: number | null
+  price: runtime.Decimal | null
 }
 
 export type Order_ItemMaxAggregateOutputType = {
   id: string | null
   orderId: string | null
+  meal_id: string | null
+  quantity: number | null
+  price: runtime.Decimal | null
 }
 
 export type Order_ItemCountAggregateOutputType = {
   id: number
   orderId: number
+  meal_id: number
+  quantity: number
+  price: number
   _all: number
 }
 
 
+export type Order_ItemAvgAggregateInputType = {
+  quantity?: true
+  price?: true
+}
+
+export type Order_ItemSumAggregateInputType = {
+  quantity?: true
+  price?: true
+}
+
 export type Order_ItemMinAggregateInputType = {
   id?: true
   orderId?: true
+  meal_id?: true
+  quantity?: true
+  price?: true
 }
 
 export type Order_ItemMaxAggregateInputType = {
   id?: true
   orderId?: true
+  meal_id?: true
+  quantity?: true
+  price?: true
 }
 
 export type Order_ItemCountAggregateInputType = {
   id?: true
   orderId?: true
+  meal_id?: true
+  quantity?: true
+  price?: true
   _all?: true
 }
 
@@ -95,6 +135,18 @@ export type Order_ItemAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: Order_ItemAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: Order_ItemSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: Order_ItemMinAggregateInputType
@@ -125,6 +177,8 @@ export type Order_ItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   _count?: Order_ItemCountAggregateInputType | true
+  _avg?: Order_ItemAvgAggregateInputType
+  _sum?: Order_ItemSumAggregateInputType
   _min?: Order_ItemMinAggregateInputType
   _max?: Order_ItemMaxAggregateInputType
 }
@@ -132,7 +186,12 @@ export type Order_ItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 export type Order_ItemGroupByOutputType = {
   id: string
   orderId: string
+  meal_id: string
+  quantity: number
+  price: runtime.Decimal
   _count: Order_ItemCountAggregateOutputType | null
+  _avg: Order_ItemAvgAggregateOutputType | null
+  _sum: Order_ItemSumAggregateOutputType | null
   _min: Order_ItemMinAggregateOutputType | null
   _max: Order_ItemMaxAggregateOutputType | null
 }
@@ -158,13 +217,21 @@ export type Order_ItemWhereInput = {
   NOT?: Prisma.Order_ItemWhereInput | Prisma.Order_ItemWhereInput[]
   id?: Prisma.StringFilter<"Order_Item"> | string
   orderId?: Prisma.StringFilter<"Order_Item"> | string
+  meal_id?: Prisma.StringFilter<"Order_Item"> | string
+  quantity?: Prisma.IntFilter<"Order_Item"> | number
+  price?: Prisma.DecimalFilter<"Order_Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
+  meal?: Prisma.XOR<Prisma.MealScalarRelationFilter, Prisma.MealWhereInput>
 }
 
 export type Order_ItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  meal_id?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   order?: Prisma.OrderOrderByWithRelationInput
+  meal?: Prisma.MealOrderByWithRelationInput
 }
 
 export type Order_ItemWhereUniqueInput = Prisma.AtLeast<{
@@ -173,15 +240,24 @@ export type Order_ItemWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.Order_ItemWhereInput[]
   NOT?: Prisma.Order_ItemWhereInput | Prisma.Order_ItemWhereInput[]
   orderId?: Prisma.StringFilter<"Order_Item"> | string
+  meal_id?: Prisma.StringFilter<"Order_Item"> | string
+  quantity?: Prisma.IntFilter<"Order_Item"> | number
+  price?: Prisma.DecimalFilter<"Order_Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
+  meal?: Prisma.XOR<Prisma.MealScalarRelationFilter, Prisma.MealWhereInput>
 }, "id">
 
 export type Order_ItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  meal_id?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   _count?: Prisma.Order_ItemCountOrderByAggregateInput
+  _avg?: Prisma.Order_ItemAvgOrderByAggregateInput
   _max?: Prisma.Order_ItemMaxOrderByAggregateInput
   _min?: Prisma.Order_ItemMinOrderByAggregateInput
+  _sum?: Prisma.Order_ItemSumOrderByAggregateInput
 }
 
 export type Order_ItemScalarWhereWithAggregatesInput = {
@@ -190,40 +266,63 @@ export type Order_ItemScalarWhereWithAggregatesInput = {
   NOT?: Prisma.Order_ItemScalarWhereWithAggregatesInput | Prisma.Order_ItemScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Order_Item"> | string
   orderId?: Prisma.StringWithAggregatesFilter<"Order_Item"> | string
+  meal_id?: Prisma.StringWithAggregatesFilter<"Order_Item"> | string
+  quantity?: Prisma.IntWithAggregatesFilter<"Order_Item"> | number
+  price?: Prisma.DecimalWithAggregatesFilter<"Order_Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemCreateInput = {
   id?: string
+  quantity: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
   order: Prisma.OrderCreateNestedOneWithoutOrderItemsInput
+  meal: Prisma.MealCreateNestedOneWithoutOrderItemsInput
 }
 
 export type Order_ItemUncheckedCreateInput = {
   id?: string
   orderId: string
+  meal_id: string
+  quantity: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   order?: Prisma.OrderUpdateOneRequiredWithoutOrderItemsNestedInput
+  meal?: Prisma.MealUpdateOneRequiredWithoutOrderItemsNestedInput
 }
 
 export type Order_ItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  meal_id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemCreateManyInput = {
   id?: string
   orderId: string
+  meal_id: string
+  quantity: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  meal_id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemListRelationFilter = {
@@ -239,16 +338,77 @@ export type Order_ItemOrderByRelationAggregateInput = {
 export type Order_ItemCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  meal_id?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+}
+
+export type Order_ItemAvgOrderByAggregateInput = {
+  quantity?: Prisma.SortOrder
+  price?: Prisma.SortOrder
 }
 
 export type Order_ItemMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  meal_id?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
+  price?: Prisma.SortOrder
 }
 
 export type Order_ItemMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  meal_id?: Prisma.SortOrder
+  quantity?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+}
+
+export type Order_ItemSumOrderByAggregateInput = {
+  quantity?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+}
+
+export type Order_ItemCreateNestedManyWithoutMealInput = {
+  create?: Prisma.XOR<Prisma.Order_ItemCreateWithoutMealInput, Prisma.Order_ItemUncheckedCreateWithoutMealInput> | Prisma.Order_ItemCreateWithoutMealInput[] | Prisma.Order_ItemUncheckedCreateWithoutMealInput[]
+  connectOrCreate?: Prisma.Order_ItemCreateOrConnectWithoutMealInput | Prisma.Order_ItemCreateOrConnectWithoutMealInput[]
+  createMany?: Prisma.Order_ItemCreateManyMealInputEnvelope
+  connect?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+}
+
+export type Order_ItemUncheckedCreateNestedManyWithoutMealInput = {
+  create?: Prisma.XOR<Prisma.Order_ItemCreateWithoutMealInput, Prisma.Order_ItemUncheckedCreateWithoutMealInput> | Prisma.Order_ItemCreateWithoutMealInput[] | Prisma.Order_ItemUncheckedCreateWithoutMealInput[]
+  connectOrCreate?: Prisma.Order_ItemCreateOrConnectWithoutMealInput | Prisma.Order_ItemCreateOrConnectWithoutMealInput[]
+  createMany?: Prisma.Order_ItemCreateManyMealInputEnvelope
+  connect?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+}
+
+export type Order_ItemUpdateManyWithoutMealNestedInput = {
+  create?: Prisma.XOR<Prisma.Order_ItemCreateWithoutMealInput, Prisma.Order_ItemUncheckedCreateWithoutMealInput> | Prisma.Order_ItemCreateWithoutMealInput[] | Prisma.Order_ItemUncheckedCreateWithoutMealInput[]
+  connectOrCreate?: Prisma.Order_ItemCreateOrConnectWithoutMealInput | Prisma.Order_ItemCreateOrConnectWithoutMealInput[]
+  upsert?: Prisma.Order_ItemUpsertWithWhereUniqueWithoutMealInput | Prisma.Order_ItemUpsertWithWhereUniqueWithoutMealInput[]
+  createMany?: Prisma.Order_ItemCreateManyMealInputEnvelope
+  set?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+  disconnect?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+  delete?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+  connect?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+  update?: Prisma.Order_ItemUpdateWithWhereUniqueWithoutMealInput | Prisma.Order_ItemUpdateWithWhereUniqueWithoutMealInput[]
+  updateMany?: Prisma.Order_ItemUpdateManyWithWhereWithoutMealInput | Prisma.Order_ItemUpdateManyWithWhereWithoutMealInput[]
+  deleteMany?: Prisma.Order_ItemScalarWhereInput | Prisma.Order_ItemScalarWhereInput[]
+}
+
+export type Order_ItemUncheckedUpdateManyWithoutMealNestedInput = {
+  create?: Prisma.XOR<Prisma.Order_ItemCreateWithoutMealInput, Prisma.Order_ItemUncheckedCreateWithoutMealInput> | Prisma.Order_ItemCreateWithoutMealInput[] | Prisma.Order_ItemUncheckedCreateWithoutMealInput[]
+  connectOrCreate?: Prisma.Order_ItemCreateOrConnectWithoutMealInput | Prisma.Order_ItemCreateOrConnectWithoutMealInput[]
+  upsert?: Prisma.Order_ItemUpsertWithWhereUniqueWithoutMealInput | Prisma.Order_ItemUpsertWithWhereUniqueWithoutMealInput[]
+  createMany?: Prisma.Order_ItemCreateManyMealInputEnvelope
+  set?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+  disconnect?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+  delete?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+  connect?: Prisma.Order_ItemWhereUniqueInput | Prisma.Order_ItemWhereUniqueInput[]
+  update?: Prisma.Order_ItemUpdateWithWhereUniqueWithoutMealInput | Prisma.Order_ItemUpdateWithWhereUniqueWithoutMealInput[]
+  updateMany?: Prisma.Order_ItemUpdateManyWithWhereWithoutMealInput | Prisma.Order_ItemUpdateManyWithWhereWithoutMealInput[]
+  deleteMany?: Prisma.Order_ItemScalarWhereInput | Prisma.Order_ItemScalarWhereInput[]
 }
 
 export type Order_ItemCreateNestedManyWithoutOrderInput = {
@@ -293,12 +453,77 @@ export type Order_ItemUncheckedUpdateManyWithoutOrderNestedInput = {
   deleteMany?: Prisma.Order_ItemScalarWhereInput | Prisma.Order_ItemScalarWhereInput[]
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type Order_ItemCreateWithoutMealInput = {
+  id?: string
+  quantity: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  order: Prisma.OrderCreateNestedOneWithoutOrderItemsInput
+}
+
+export type Order_ItemUncheckedCreateWithoutMealInput = {
+  id?: string
+  orderId: string
+  quantity: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type Order_ItemCreateOrConnectWithoutMealInput = {
+  where: Prisma.Order_ItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.Order_ItemCreateWithoutMealInput, Prisma.Order_ItemUncheckedCreateWithoutMealInput>
+}
+
+export type Order_ItemCreateManyMealInputEnvelope = {
+  data: Prisma.Order_ItemCreateManyMealInput | Prisma.Order_ItemCreateManyMealInput[]
+  skipDuplicates?: boolean
+}
+
+export type Order_ItemUpsertWithWhereUniqueWithoutMealInput = {
+  where: Prisma.Order_ItemWhereUniqueInput
+  update: Prisma.XOR<Prisma.Order_ItemUpdateWithoutMealInput, Prisma.Order_ItemUncheckedUpdateWithoutMealInput>
+  create: Prisma.XOR<Prisma.Order_ItemCreateWithoutMealInput, Prisma.Order_ItemUncheckedCreateWithoutMealInput>
+}
+
+export type Order_ItemUpdateWithWhereUniqueWithoutMealInput = {
+  where: Prisma.Order_ItemWhereUniqueInput
+  data: Prisma.XOR<Prisma.Order_ItemUpdateWithoutMealInput, Prisma.Order_ItemUncheckedUpdateWithoutMealInput>
+}
+
+export type Order_ItemUpdateManyWithWhereWithoutMealInput = {
+  where: Prisma.Order_ItemScalarWhereInput
+  data: Prisma.XOR<Prisma.Order_ItemUpdateManyMutationInput, Prisma.Order_ItemUncheckedUpdateManyWithoutMealInput>
+}
+
+export type Order_ItemScalarWhereInput = {
+  AND?: Prisma.Order_ItemScalarWhereInput | Prisma.Order_ItemScalarWhereInput[]
+  OR?: Prisma.Order_ItemScalarWhereInput[]
+  NOT?: Prisma.Order_ItemScalarWhereInput | Prisma.Order_ItemScalarWhereInput[]
+  id?: Prisma.StringFilter<"Order_Item"> | string
+  orderId?: Prisma.StringFilter<"Order_Item"> | string
+  meal_id?: Prisma.StringFilter<"Order_Item"> | string
+  quantity?: Prisma.IntFilter<"Order_Item"> | number
+  price?: Prisma.DecimalFilter<"Order_Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
 export type Order_ItemCreateWithoutOrderInput = {
   id?: string
+  quantity: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+  meal: Prisma.MealCreateNestedOneWithoutOrderItemsInput
 }
 
 export type Order_ItemUncheckedCreateWithoutOrderInput = {
   id?: string
+  meal_id: string
+  quantity: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemCreateOrConnectWithoutOrderInput = {
@@ -327,28 +552,60 @@ export type Order_ItemUpdateManyWithWhereWithoutOrderInput = {
   data: Prisma.XOR<Prisma.Order_ItemUpdateManyMutationInput, Prisma.Order_ItemUncheckedUpdateManyWithoutOrderInput>
 }
 
-export type Order_ItemScalarWhereInput = {
-  AND?: Prisma.Order_ItemScalarWhereInput | Prisma.Order_ItemScalarWhereInput[]
-  OR?: Prisma.Order_ItemScalarWhereInput[]
-  NOT?: Prisma.Order_ItemScalarWhereInput | Prisma.Order_ItemScalarWhereInput[]
-  id?: Prisma.StringFilter<"Order_Item"> | string
-  orderId?: Prisma.StringFilter<"Order_Item"> | string
+export type Order_ItemCreateManyMealInput = {
+  id?: string
+  orderId: string
+  quantity: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type Order_ItemUpdateWithoutMealInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  order?: Prisma.OrderUpdateOneRequiredWithoutOrderItemsNestedInput
+}
+
+export type Order_ItemUncheckedUpdateWithoutMealInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type Order_ItemUncheckedUpdateManyWithoutMealInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemCreateManyOrderInput = {
   id?: string
+  meal_id: string
+  quantity: number
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  meal?: Prisma.MealUpdateOneRequiredWithoutOrderItemsNestedInput
 }
 
 export type Order_ItemUncheckedUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  meal_id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type Order_ItemUncheckedUpdateManyWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  meal_id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 
@@ -356,45 +613,67 @@ export type Order_ItemUncheckedUpdateManyWithoutOrderInput = {
 export type Order_ItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  meal_id?: boolean
+  quantity?: boolean
+  price?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  meal?: boolean | Prisma.MealDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order_Item"]>
 
 export type Order_ItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  meal_id?: boolean
+  quantity?: boolean
+  price?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  meal?: boolean | Prisma.MealDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order_Item"]>
 
 export type Order_ItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  meal_id?: boolean
+  quantity?: boolean
+  price?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  meal?: boolean | Prisma.MealDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order_Item"]>
 
 export type Order_ItemSelectScalar = {
   id?: boolean
   orderId?: boolean
+  meal_id?: boolean
+  quantity?: boolean
+  price?: boolean
 }
 
-export type Order_ItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId", ExtArgs["result"]["order_Item"]>
+export type Order_ItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "meal_id" | "quantity" | "price", ExtArgs["result"]["order_Item"]>
 export type Order_ItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  meal?: boolean | Prisma.MealDefaultArgs<ExtArgs>
 }
 export type Order_ItemIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  meal?: boolean | Prisma.MealDefaultArgs<ExtArgs>
 }
 export type Order_ItemIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  meal?: boolean | Prisma.MealDefaultArgs<ExtArgs>
 }
 
 export type $Order_ItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Order_Item"
   objects: {
     order: Prisma.$OrderPayload<ExtArgs>
+    meal: Prisma.$MealPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     orderId: string
+    meal_id: string
+    quantity: number
+    price: runtime.Decimal
   }, ExtArgs["result"]["order_Item"]>
   composites: {}
 }
@@ -790,6 +1069,7 @@ readonly fields: Order_ItemFieldRefs;
 export interface Prisma__Order_ItemClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   order<T extends Prisma.OrderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrderDefaultArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  meal<T extends Prisma.MealDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MealDefaultArgs<ExtArgs>>): Prisma.Prisma__MealClient<runtime.Types.Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -821,6 +1101,9 @@ export interface Prisma__Order_ItemClient<T, Null = never, ExtArgs extends runti
 export interface Order_ItemFieldRefs {
   readonly id: Prisma.FieldRef<"Order_Item", 'String'>
   readonly orderId: Prisma.FieldRef<"Order_Item", 'String'>
+  readonly meal_id: Prisma.FieldRef<"Order_Item", 'String'>
+  readonly quantity: Prisma.FieldRef<"Order_Item", 'Int'>
+  readonly price: Prisma.FieldRef<"Order_Item", 'Decimal'>
 }
     
 
