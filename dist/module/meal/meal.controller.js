@@ -1,63 +1,67 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.MealsController = void 0;
-const catchAsync_1 = require("@/utils/catchAsync");
-const http_status_codes_1 = __importDefault(require("http-status-codes"));
-const sendResponse_1 = require("@/utils/sendResponse");
-const meal_service_1 = require("./meal.service");
-class MealsController {
-    providerService = new meal_service_1.MealService();
-    getAllMeals = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const result = await this.providerService.getMeal(req);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.OK,
-            success: true,
-            message: "Retrieve all meals",
-            data: result.meals,
-            meta: result.meta,
-        });
-    });
-    getSingleMeal = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const { id } = req.params;
-        const result = await this.providerService.getIdMeal(id);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.OK,
-            success: true,
-            message: "Retrieve single meal",
-            data: result,
-        });
-    });
-    createMeal = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const result = await this.providerService.createMeal(req.body);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.CREATED,
-            success: true,
-            message: "Meal created successfully",
-            data: result,
-        });
-    });
-    updateMeal = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const { id } = req.params;
-        const result = await this.providerService.updateMeal(id, req.body);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.OK,
-            success: true,
-            message: "Meal updated successfully",
-            data: result,
-        });
-    });
-    deleteMeal = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const { id } = req.params;
-        const result = await this.providerService.deleteMeal(id);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.OK,
-            success: true,
-            message: "Meal deleted successfully",
-            data: result,
-        });
-    });
+import { catchAsync } from "@/utils/catchAsync";
+import httpStatus from "http-status-codes";
+import { sendResponse } from "@/utils/sendResponse";
+import { MealService } from "./meal.service";
+export class MealsController {
+    constructor() {
+        this.providerService = new MealService();
+        this.getAllMeals = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.providerService.getMeal(req);
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: "Retrieve all meals",
+                data: result.meals,
+                meta: result.meta,
+            });
+        }));
+        this.getSingleMeal = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const result = yield this.providerService.getIdMeal(id);
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: "Retrieve single meal",
+                data: result,
+            });
+        }));
+        this.createMeal = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.providerService.createMeal(req.body);
+            sendResponse(res, {
+                statusCode: httpStatus.CREATED,
+                success: true,
+                message: "Meal created successfully",
+                data: result,
+            });
+        }));
+        this.updateMeal = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const result = yield this.providerService.updateMeal(id, req.body);
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: "Meal updated successfully",
+                data: result,
+            });
+        }));
+        this.deleteMeal = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const result = yield this.providerService.deleteMeal(id);
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: "Meal deleted successfully",
+                data: result,
+            });
+        }));
+    }
 }
-exports.MealsController = MealsController;

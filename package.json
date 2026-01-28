@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "`Food Hub Backend`",
   "main": "./dist/server.js",
+  "type": "module",
   "scripts": {
     "dev": "tsx watch ./src/server.ts",
     "build": "tsc",
     "seeding:admin": "tsx ./src/scripts/adminSeeding.ts",
     "migrate": "npx prisma migrate dev",
-    "deploy": "npx prisma migrate deploy",
     "generate": "npx prisma generate",
+    "deploy": "npx prisma migrate deploy",
     "studio": "npx prisma studio",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

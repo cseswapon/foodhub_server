@@ -88,6 +88,10 @@ export class MealService {
       where: {
         id,
       },
+      include: {
+        category:true,
+        provider: true,
+      },
     });
     return meal;
   };

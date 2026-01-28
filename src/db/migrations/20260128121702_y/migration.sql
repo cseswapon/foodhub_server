@@ -75,9 +75,9 @@ CREATE TABLE "meals" (
     "category_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
+    "price" DECIMAL(10,2) NOT NULL,
     "dietary_type" "DietaryType" NOT NULL,
-    "is_available" BOOLEAN NOT NULL,
+    "is_available" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -87,9 +87,9 @@ CREATE TABLE "meals" (
 -- CreateTable
 CREATE TABLE "orders" (
     "id" TEXT NOT NULL,
-    "customer_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
     "provider_id" TEXT NOT NULL,
-    "total_price" DECIMAL(65,30) NOT NULL,
+    "total_price" DECIMAL(10,2) NOT NULL,
     "delivery_address" TEXT NOT NULL,
     "payment_method" "PaymentMethod" NOT NULL,
     "status" "OrderStatus" NOT NULL,
@@ -103,6 +103,9 @@ CREATE TABLE "orders" (
 CREATE TABLE "order_items" (
     "id" TEXT NOT NULL,
     "orderId" TEXT NOT NULL,
+    "meal_id" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "price" DECIMAL(10,2) NOT NULL,
 
     CONSTRAINT "order_items_pkey" PRIMARY KEY ("id")
 );
@@ -114,7 +117,7 @@ CREATE TABLE "providers" (
     "restaurant_name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "address" TEXT NOT NULL,
-    "is_open" BOOLEAN NOT NULL,
+    "is_open" BOOLEAN NOT NULL DEFAULT true,
     "fb_link" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -127,8 +130,11 @@ CREATE TABLE "reviews" (
     "id" TEXT NOT NULL,
     "meal_id" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
+    "comment" TEXT,
     "user_id" TEXT NOT NULL,
-    "userId" TEXT,
+    "is_visible" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
@@ -178,7 +184,7 @@ CREATE INDEX "meals_price_idx" ON "meals"("price");
 CREATE INDEX "orders_status_idx" ON "orders"("status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "providers_user_id_key" ON "providers"("user_id");
+CREATE UNIQUE INDEX "providers_restaurant_name_key" ON "providers"("restaurant_name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
@@ -196,13 +202,16 @@ ALTER TABLE "meals" ADD CONSTRAINT "meals_provider_id_fkey" FOREIGN KEY ("provid
 ALTER TABLE "meals" ADD CONSTRAINT "meals_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_provider_id_fkey" FOREIGN KEY ("provider_id") REFERENCES "providers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "order_items" ADD CONSTRAINT "order_items_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_items" ADD CONSTRAINT "order_items_meal_id_fkey" FOREIGN KEY ("meal_id") REFERENCES "meals"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "providers" ADD CONSTRAINT "providers_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

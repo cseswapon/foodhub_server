@@ -1,11 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.db = void 0;
-require("dotenv/config");
-const adapter_pg_1 = require("@prisma/adapter-pg");
-const index_js_1 = require("../config/index.js");
-const client_js_1 = require("./generated/client.js");
-const connectionString = `${index_js_1.config.DATABASE_URL}`;
-const adapter = new adapter_pg_1.PrismaPg({ connectionString });
-const db = new client_js_1.PrismaClient({ adapter });
-exports.db = db;
+import { config } from "@/config/index";
+import { PrismaClient } from "./generated/client";
+import { PrismaPg } from "../../node_modules/@prisma/adapter-pg/dist/index";
+const connectionString = `${config.DATABASE_URL}`;
+const adapter = new PrismaPg({ connectionString });
+const db = new PrismaClient({ adapter });
+export { db };

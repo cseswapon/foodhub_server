@@ -1,63 +1,67 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoriesController = void 0;
-const catchAsync_1 = require("@/utils/catchAsync");
-const categories_service_1 = require("./categories.service");
-const http_status_codes_1 = __importDefault(require("http-status-codes"));
-const sendResponse_1 = require("@/utils/sendResponse");
-class CategoriesController {
-    categoriesService = new categories_service_1.CategoriesService();
-    getAllCategories = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const result = await this.categoriesService.getCategories(req);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.OK,
-            success: true,
-            message: "Retrieve all categories",
-            data: result.categories,
-            meta: result.meta,
-        });
-    });
-    getSingleCategory = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const { id } = req.params;
-        const result = await this.categoriesService.getIdCategories(id);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.OK,
-            success: true,
-            message: "Retrieve single category",
-            data: result,
-        });
-    });
-    createCategory = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const result = await this.categoriesService.createCategories(req.body);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.CREATED,
-            success: true,
-            message: "Category created successfully",
-            data: result,
-        });
-    });
-    updateCategory = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const { id } = req.params;
-        const result = await this.categoriesService.updateCategories(id, req.body);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.OK,
-            success: true,
-            message: "Category updated successfully",
-            data: result,
-        });
-    });
-    deleteCategory = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
-        const { id } = req.params;
-        const result = await this.categoriesService.deleteCategories(id);
-        (0, sendResponse_1.sendResponse)(res, {
-            statusCode: http_status_codes_1.default.OK,
-            success: true,
-            message: "Category deleted successfully",
-            data: result,
-        });
-    });
+import { catchAsync } from "@/utils/catchAsync";
+import { CategoriesService } from "./categories.service";
+import httpStatus from "http-status-codes";
+import { sendResponse } from "@/utils/sendResponse";
+export class CategoriesController {
+    constructor() {
+        this.categoriesService = new CategoriesService();
+        this.getAllCategories = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.categoriesService.getCategories(req);
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: "Retrieve all categories",
+                data: result.categories,
+                meta: result.meta,
+            });
+        }));
+        this.getSingleCategory = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const result = yield this.categoriesService.getIdCategories(id);
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: "Retrieve single category",
+                data: result,
+            });
+        }));
+        this.createCategory = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.categoriesService.createCategories(req.body);
+            sendResponse(res, {
+                statusCode: httpStatus.CREATED,
+                success: true,
+                message: "Category created successfully",
+                data: result,
+            });
+        }));
+        this.updateCategory = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const result = yield this.categoriesService.updateCategories(id, req.body);
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: "Category updated successfully",
+                data: result,
+            });
+        }));
+        this.deleteCategory = catchAsync((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const result = yield this.categoriesService.deleteCategories(id);
+            sendResponse(res, {
+                statusCode: httpStatus.OK,
+                success: true,
+                message: "Category deleted successfully",
+                data: result,
+            });
+        }));
+    }
 }
-exports.CategoriesController = CategoriesController;

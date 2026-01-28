@@ -1,23 +1,27 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_js_1 = require("./config/index.js");
-const index_js_2 = require("./db/index.js");
-const index_js_3 = __importDefault(require("./index.js"));
-(async () => {
+import { config } from "./config/index.js";
+import { db } from "./db/index.js";
+import app from "./index.js";
+(() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        index_js_3.default.listen(index_js_1.config.PORT, async () => {
-            await index_js_2.db.$connect();
+        app.listen(config.PORT, () => __awaiter(void 0, void 0, void 0, function* () {
+            yield db.$connect();
             console.log("🚀 DB connected 🚀");
-            console.log(`🚀 Server started on http://localhost:${index_js_1.config.PORT} 🚀`);
-        });
+            console.log(`🚀 Server started on http://localhost:${config.PORT} 🚀`);
+        }));
     }
     catch (err) {
         const error = err instanceof Error ? err.message : "connection loss";
         console.error("❌ Server failed to start:", error);
-        await index_js_2.db.$disconnect();
+        yield db.$disconnect();
         process.exit(1);
     }
-})();
+}))();

@@ -1,47 +1,51 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const http_status_codes_1 = __importDefault(require("http-status-codes"));
-const cors_1 = __importDefault(require("cors"));
-const node_1 = require("better-auth/node");
-const auth_1 = require("./lib/auth");
-const routes_1 = __importDefault(require("./routes/routes"));
-const authGuard_1 = require("./middleware/authGuard");
-const user_service_1 = require("./module/user/user.service");
-const sendResponse_1 = require("./utils/sendResponse");
-const user_controller_1 = require("./module/user/user.controller");
-const userService = new user_service_1.UserServices();
-const userController = new user_controller_1.UserController();
-const app = (0, express_1.default)();
-app.use(express_1.default.json());
-app.use(express_1.default.urlencoded());
-app.use((0, cors_1.default)({
+import express from "express";
+import httpStatus from "http-status-codes";
+import cors from "cors";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth";
+import router from "./routes/routes";
+import { authGuard } from "./middleware/authGuard";
+import { UserServices } from "./module/user/user.service";
+import { sendResponse } from "./utils/sendResponse";
+import { UserController } from "./module/user/user.controller";
+const userService = new UserServices();
+const userController = new UserController();
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(cors({
     origin: ["http://localhost:3000"],
     credentials: true,
 }));
 // user profile
-app.patch("/api/users/profile", (0, authGuard_1.authGuard)(), userController.updateProfile.bind(userController));
-app.use("/api/auth/me", (0, authGuard_1.authGuard)(), async (req, res) => {
-    const user = await userService.getUserProfile(req.user.email);
-    (0, sendResponse_1.sendResponse)(res, {
+app.patch("/api/users/profile", authGuard(), userController.updateProfile.bind(userController));
+app.use("/api/auth/me", authGuard(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield userService.getUserProfile(req.user.email);
+    sendResponse(res, {
         success: true,
-        statusCode: http_status_codes_1.default.OK,
+        statusCode: httpStatus.OK,
         message: "Profile",
         data: user,
     });
-});
+}));
 // auth route
-app.all("/api/auth/*splat", (0, node_1.toNodeHandler)(auth_1.auth));
+app.all("/api/auth/*splat", toNodeHandler(auth));
 app.get("/", (req, res) => {
-    res.status(http_status_codes_1.default.OK).send({
+    res.status(httpStatus.OK).send({
         success: true,
         message: "Hey Baby Programer !!! What's up ?",
         time: new Date().toISOString(),
     });
 });
 // all route
-app.use(routes_1.default);
-exports.default = app;
+app.use(router);
+export default app;
