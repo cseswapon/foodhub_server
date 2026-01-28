@@ -28,7 +28,7 @@ export class MealsController {
       sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "Retrieve single provider",
+        message: "Retrieve single meal",
         data: result,
       });
     },
