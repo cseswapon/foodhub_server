@@ -6,14 +6,12 @@ const router: Router = express.Router();
 const providerController = new ProvidersController();
 
 router.get(
-  "/all",
-  authGuard("admin"),
+  "/",
   providerController.getAllProviders.bind(providerController),
 );
 
 router.get(
-  "/profile",
-  authGuard(),
+  "/:id",
   providerController.getSingleProvider.bind(providerController),
 );
 

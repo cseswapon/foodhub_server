@@ -34,7 +34,17 @@ export class ProviderService {
   getIdProvider = async (id: string) => {
     const provider = await this.db.provider.findMany({
       where: {
-        user_id: id,
+        id,
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
+          },
+        },
       },
     });
     return provider;

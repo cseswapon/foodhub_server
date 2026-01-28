@@ -22,9 +22,9 @@ export class ProvidersController {
   );
 
   getSingleProvider = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request,res: Response,next: NextFunction) => {
       const result = await this.providerService.getIdProvider(
-        req.user.id as string,
+        req.params.id as string,
       );
 
       sendResponse(res, {

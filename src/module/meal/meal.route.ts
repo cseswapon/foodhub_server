@@ -7,13 +7,11 @@ const providerController = new MealsController();
 
 router.get(
   "/",
-  authGuard(),
   providerController.getAllMeals.bind(providerController),
 );
 
 router.get(
   "/:id",
-  authGuard(),
   providerController.getSingleMeal.bind(providerController),
 );
 

@@ -54,6 +54,7 @@ export class MealService {
     const total = await this.db.meal.count({
       where: {
         AND: filterWhere,
+        is_available: true,
       },
     });
 
@@ -89,7 +90,7 @@ export class MealService {
         id,
       },
       include: {
-        category:true,
+        category: true,
         provider: true,
       },
     });
