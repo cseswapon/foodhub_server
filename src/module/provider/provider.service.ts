@@ -32,7 +32,7 @@ export class ProviderService {
   };
 
   getIdProvider = async (id: string) => {
-    const provider = await this.db.provider.findMany({
+    const provider = await this.db.provider.findUnique({
       where: {
         id,
       },
