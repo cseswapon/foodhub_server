@@ -21,19 +21,22 @@ export class ReviewsController {
     },
   );
 
-  getSingleReview = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const { id } = req.params;
-      const result = await this.reviewService.getIdReview(id as string);
+  getSingleReview = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
 
-      sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Retrieve single review",
-        data: result,
-      });
-    },
-  );
+    const result = await this.reviewService.getIdReview(
+      id as string,
+      req.user.id as string,
+      req.user.role as string,
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Retrieve single review",
+      data: result,
+    });
+  });
 
   createReview = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {

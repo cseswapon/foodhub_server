@@ -7,18 +7,38 @@ export class ReviewService {
   private readonly db = Database;
 
   getReview = async (req: Request) => {
-    const total = await this.db.review.count();
+    const userId = req.user.id as string;
+    const role = req.user.role as string;
+
     const { page, limit, skip } = getPagination(req);
+
+    const whereCondition: Prisma.ReviewWhereInput = {
+      is_visible: true,
+    };
+
+    if (role === "customer") {
+      whereCondition.user_id = userId;
+    }
+
+    const total = await this.db.review.count({
+      where: whereCondition,
+    });
+
     const total_page = Math.ceil(total / limit);
 
     const reviews = await this.db.review.findMany({
-      where: {
-        is_visible: true,
-      },
+      where: whereCondition,
       take: limit,
-      skip: skip,
+      skip,
       orderBy: {
         created_at: "asc",
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
@@ -34,12 +54,30 @@ export class ReviewService {
     };
   };
 
-  getIdReview = async (id: string) => {
+  getIdReview = async (id: string, userId: string, role: string) => {
+    const whereCondition: Prisma.ReviewWhereInput = {
+      id,
+    };
+
+    if (role === "customer") {
+      whereCondition.user_id = userId;
+    }
+
     const review = await this.db.review.findFirst({
-      where: {
-        id,
+      where: whereCondition,
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
+
+    if (!review) {
+      throw new Error("Review not found or access denied");
+    }
+
     return review;
   };
 
