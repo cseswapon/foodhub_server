@@ -6,13 +6,13 @@ const router: Router = express.Router();
 const reviewController = new ReviewsController();
 router.get(
   "/all",
-  authGuard("admin","customer"),
+  authGuard("admin", "customer"),
   reviewController.getAllReviews.bind(reviewController),
 );
 
 router.get(
   "/:id",
-  authGuard("admin","customer"),
+  authGuard("admin", "customer"),
   reviewController.getSingleReview.bind(reviewController),
 );
 
@@ -24,13 +24,13 @@ router.post(
 
 router.patch(
   "/:id",
-  authGuard("customer", "admin"),
+  authGuard("admin"),
   reviewController.updateReview.bind(reviewController),
 );
 
 router.delete(
   "/:id",
-  authGuard("admin", "customer"),
+  authGuard("admin"),
   reviewController.deleteReview.bind(reviewController),
 );
 

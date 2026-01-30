@@ -133,6 +133,10 @@ export class ReviewService {
       where: { id: reviewId },
     });
 
+    if (role !== "admin") {
+      delete data.is_visible;
+    }
+
     if (!review) {
       throw new Error("Review not found");
     }
