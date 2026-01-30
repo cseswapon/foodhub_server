@@ -93,6 +93,27 @@ export class OrderService {
     };
   };
 
+  getOrderMeal = async (req: Request) => {
+    const orders = await this.db.order_Item.findMany({
+      where: {
+        order: {
+          user_id: req.user.id as string,
+        },
+      },
+      include: {
+        order: {
+          select: {
+            user_id: true,
+          },
+        },
+      },
+    });
+
+    return {
+      orders,
+    };
+  };
+
   getIdOrder = async (id: string) => {
     const order = await this.db.order.findFirst({
       where: {
@@ -101,7 +122,7 @@ export class OrderService {
       include: {
         provider: true,
         user: true,
-      orderItems:true
+        orderItems: true,
       },
     });
     return order;

@@ -12,6 +12,12 @@ router.get(
 );
 
 router.get(
+  "/meal",
+  authGuard(),
+  providerController.getAllOrdersMeal.bind(providerController),
+);
+
+router.get(
   "/:id",
   authGuard(),
   providerController.getSingleOrder.bind(providerController),

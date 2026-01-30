@@ -20,6 +20,20 @@ export class OrdersController {
     },
   );
 
+  getAllOrdersMeal = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const result = await this.providerService.getOrderMeal(req);
+
+      sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Retrieve all orders",
+        data: result.orders,
+        meta: result.meta,
+      });
+    },
+  );
+
   getSingleOrder = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const { id } = req.params;
