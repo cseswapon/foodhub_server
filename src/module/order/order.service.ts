@@ -1,5 +1,10 @@
 import { db as Database } from "@/db";
-import { Order_Item, OrderStatus, PaymentMethod, Prisma } from "@/db/generated/client";
+import {
+  Order_Item,
+  OrderStatus,
+  PaymentMethod,
+  Prisma,
+} from "@/db/generated/client";
 import { getPagination } from "@/utils/pagination";
 import { Request } from "express";
 
@@ -13,7 +18,7 @@ export class OrderService {
   private readonly db = Database;
 
   getOrder = async (req: Request) => {
-    const status = req.query.status as string ;
+    const status = req.query.status as string;
 
     const where: Prisma.OrderWhereInput = {};
 
@@ -75,7 +80,6 @@ export class OrderService {
         },
       },
     });
-
 
     return {
       orders,
@@ -160,10 +164,20 @@ export class OrderService {
   ) => {
     const order = await this.db.order.findUnique({
       where: { id },
+      include: {
+        provider: {
+          select: {
+            user_id: true,
+          },
+        },
+      },
     });
-
+    // console.log(order);
     if (!order) {
       throw new Error("Order not found");
+    }
+    if (order.status === "delivered") {
+      throw new Error("Order already delivered");
     }
 
     if (role === "customer") {
@@ -171,7 +185,7 @@ export class OrderService {
         throw new Error("Customer can only cancel orders");
       }
 
-      if (!["pending", "accepted"].includes(order.status)) {
+      if (!["preparing", "ready", "delivered"].includes(order.status)) {
         throw new Error("Order can’t be cancelled at this stage");
       }
 
@@ -179,16 +193,17 @@ export class OrderService {
         throw new Error("Unauthorized order access");
       }
     }
+    // console.log(role);
     if (role === "provider") {
       if (
-        !["accepted", "preparing", "out_for_delivery", "delivered"].includes(
+        !["ready", "preparing", "delivered", "cancelled"].includes(
           data.status as string,
         )
       ) {
         throw new Error("Invalid status update by provider");
       }
 
-      if (order.provider_id !== userId) {
+      if (order.provider.user_id !== userId) {
         throw new Error("Unauthorized provider access");
       }
     }
