@@ -98,6 +98,11 @@ export class OrderService {
       where: {
         id,
       },
+      include: {
+        provider: true,
+        user: true,
+      orderItems:true
+      },
     });
     return order;
   };
