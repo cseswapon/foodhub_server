@@ -64,6 +64,7 @@ export class MealService {
     const meals = await this.db.meal.findMany({
       where: {
         AND: filterWhere,
+        is_available: true,
       },
       take: limit,
       skip: skip,
@@ -88,10 +89,26 @@ export class MealService {
     const meal = await this.db.meal.findFirst({
       where: {
         id,
+        is_available: true,
       },
       include: {
         category: true,
         provider: true,
+        reviews: {
+          where: {
+            is_visible: true,
+          },
+          select: {
+            comment: true,
+            rating: true,
+            created_at: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
     return meal;
