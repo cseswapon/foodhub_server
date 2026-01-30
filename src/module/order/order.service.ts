@@ -1,5 +1,5 @@
 import { db as Database } from "@/db";
-import { Order_Item, PaymentMethod, Prisma } from "@/db/generated/client";
+import { Order_Item, OrderStatus, PaymentMethod, Prisma } from "@/db/generated/client";
 import { getPagination } from "@/utils/pagination";
 import { Request } from "express";
 
@@ -13,15 +13,27 @@ export class OrderService {
   private readonly db = Database;
 
   getOrder = async (req: Request) => {
-    const status = req.query.status as string | undefined;
+    const status = req.query.status as string ;
 
-    let where: Record<string, any> = {};
-    if (status) where.status = status.toUpperCase();
+    const where: Prisma.OrderWhereInput = {};
 
+    if (
+      status &&
+      Object.values(OrderStatus).includes(status.toLowerCase() as OrderStatus)
+    ) {
+      where.status = status.toLowerCase() as OrderStatus;
+    }
+
+    // customer → own orders
     if (req.user.role === "customer") {
-      where.user_id = req.user.id;
-    } else if (req.user.role === "provider") {
-      where.provider_id = req.user?.id;
+      where.user_id = req.user.id as string;
+    }
+
+    // provider → orders for provider whose user_id = req.user.id
+    if (req.user.role === "provider") {
+      where.provider = {
+        user_id: req.user.id as string,
+      };
     }
 
     const total = await this.db.order.count({ where });
@@ -31,11 +43,20 @@ export class OrderService {
     const orders = await this.db.order.findMany({
       where,
       take: limit,
-      skip: skip,
+      skip,
       orderBy: {
         created_at: "desc",
       },
       include: {
+        provider: {
+          select: {
+            id: true,
+            user_id: true,
+            restaurant_name: true,
+            address: true,
+            is_open: true,
+          },
+        },
         orderItems: {
           include: {
             meal: {
@@ -54,6 +75,7 @@ export class OrderService {
         },
       },
     });
+
 
     return {
       orders,
