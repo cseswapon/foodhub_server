@@ -93,6 +93,7 @@ CREATE TABLE "orders" (
     "delivery_address" TEXT NOT NULL,
     "payment_method" "PaymentMethod" NOT NULL,
     "status" "OrderStatus" NOT NULL,
+    "cancelled_by" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -129,7 +130,7 @@ CREATE TABLE "providers" (
 CREATE TABLE "reviews" (
     "id" TEXT NOT NULL,
     "meal_id" TEXT NOT NULL,
-    "rating" INTEGER NOT NULL,
+    "rating" DECIMAL(10,1) NOT NULL,
     "comment" TEXT,
     "user_id" TEXT NOT NULL,
     "is_visible" BOOLEAN NOT NULL DEFAULT true,
