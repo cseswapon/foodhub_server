@@ -6,13 +6,13 @@ const router: Router = express.Router();
 const reviewController = new ReviewsController();
 router.get(
   "/all",
-  authGuard(),
+  authGuard("admin","customer"),
   reviewController.getAllReviews.bind(reviewController),
 );
 
 router.get(
   "/:id",
-  authGuard(),
+  authGuard("admin","customer"),
   reviewController.getSingleReview.bind(reviewController),
 );
 

@@ -27,17 +27,17 @@ export type AggregateReview = {
 }
 
 export type ReviewAvgAggregateOutputType = {
-  rating: number | null
+  rating: runtime.Decimal | null
 }
 
 export type ReviewSumAggregateOutputType = {
-  rating: number | null
+  rating: runtime.Decimal | null
 }
 
 export type ReviewMinAggregateOutputType = {
   id: string | null
   meal_id: string | null
-  rating: number | null
+  rating: runtime.Decimal | null
   comment: string | null
   user_id: string | null
   is_visible: boolean | null
@@ -48,7 +48,7 @@ export type ReviewMinAggregateOutputType = {
 export type ReviewMaxAggregateOutputType = {
   id: string | null
   meal_id: string | null
-  rating: number | null
+  rating: runtime.Decimal | null
   comment: string | null
   user_id: string | null
   is_visible: boolean | null
@@ -200,7 +200,7 @@ export type ReviewGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type ReviewGroupByOutputType = {
   id: string
   meal_id: string
-  rating: number
+  rating: runtime.Decimal
   comment: string | null
   user_id: string
   is_visible: boolean
@@ -234,7 +234,7 @@ export type ReviewWhereInput = {
   NOT?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
   id?: Prisma.StringFilter<"Review"> | string
   meal_id?: Prisma.StringFilter<"Review"> | string
-  rating?: Prisma.IntFilter<"Review"> | number
+  rating?: Prisma.DecimalFilter<"Review"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.StringNullableFilter<"Review"> | string | null
   user_id?: Prisma.StringFilter<"Review"> | string
   is_visible?: Prisma.BoolFilter<"Review"> | boolean
@@ -263,7 +263,7 @@ export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ReviewWhereInput[]
   NOT?: Prisma.ReviewWhereInput | Prisma.ReviewWhereInput[]
   meal_id?: Prisma.StringFilter<"Review"> | string
-  rating?: Prisma.IntFilter<"Review"> | number
+  rating?: Prisma.DecimalFilter<"Review"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.StringNullableFilter<"Review"> | string | null
   user_id?: Prisma.StringFilter<"Review"> | string
   is_visible?: Prisma.BoolFilter<"Review"> | boolean
@@ -295,7 +295,7 @@ export type ReviewScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ReviewScalarWhereWithAggregatesInput | Prisma.ReviewScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Review"> | string
   meal_id?: Prisma.StringWithAggregatesFilter<"Review"> | string
-  rating?: Prisma.IntWithAggregatesFilter<"Review"> | number
+  rating?: Prisma.DecimalWithAggregatesFilter<"Review"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.StringNullableWithAggregatesFilter<"Review"> | string | null
   user_id?: Prisma.StringWithAggregatesFilter<"Review"> | string
   is_visible?: Prisma.BoolWithAggregatesFilter<"Review"> | boolean
@@ -305,7 +305,7 @@ export type ReviewScalarWhereWithAggregatesInput = {
 
 export type ReviewCreateInput = {
   id?: string
-  rating: number
+  rating: runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: string | null
   is_visible?: boolean
   created_at?: Date | string
@@ -317,7 +317,7 @@ export type ReviewCreateInput = {
 export type ReviewUncheckedCreateInput = {
   id?: string
   meal_id: string
-  rating: number
+  rating: runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: string | null
   user_id: string
   is_visible?: boolean
@@ -327,7 +327,7 @@ export type ReviewUncheckedCreateInput = {
 
 export type ReviewUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -339,7 +339,7 @@ export type ReviewUpdateInput = {
 export type ReviewUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   meal_id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_id?: Prisma.StringFieldUpdateOperationsInput | string
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -350,7 +350,7 @@ export type ReviewUncheckedUpdateInput = {
 export type ReviewCreateManyInput = {
   id?: string
   meal_id: string
-  rating: number
+  rating: runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: string | null
   user_id: string
   is_visible?: boolean
@@ -360,7 +360,7 @@ export type ReviewCreateManyInput = {
 
 export type ReviewUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,7 +370,7 @@ export type ReviewUpdateManyMutationInput = {
 export type ReviewUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   meal_id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_id?: Prisma.StringFieldUpdateOperationsInput | string
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -515,7 +515,7 @@ export type ReviewUncheckedUpdateManyWithoutUserNestedInput = {
 
 export type ReviewCreateWithoutMealInput = {
   id?: string
-  rating: number
+  rating: runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: string | null
   is_visible?: boolean
   created_at?: Date | string
@@ -525,7 +525,7 @@ export type ReviewCreateWithoutMealInput = {
 
 export type ReviewUncheckedCreateWithoutMealInput = {
   id?: string
-  rating: number
+  rating: runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: string | null
   user_id: string
   is_visible?: boolean
@@ -565,7 +565,7 @@ export type ReviewScalarWhereInput = {
   NOT?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
   id?: Prisma.StringFilter<"Review"> | string
   meal_id?: Prisma.StringFilter<"Review"> | string
-  rating?: Prisma.IntFilter<"Review"> | number
+  rating?: Prisma.DecimalFilter<"Review"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.StringNullableFilter<"Review"> | string | null
   user_id?: Prisma.StringFilter<"Review"> | string
   is_visible?: Prisma.BoolFilter<"Review"> | boolean
@@ -575,7 +575,7 @@ export type ReviewScalarWhereInput = {
 
 export type ReviewCreateWithoutUserInput = {
   id?: string
-  rating: number
+  rating: runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: string | null
   is_visible?: boolean
   created_at?: Date | string
@@ -586,7 +586,7 @@ export type ReviewCreateWithoutUserInput = {
 export type ReviewUncheckedCreateWithoutUserInput = {
   id?: string
   meal_id: string
-  rating: number
+  rating: runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: string | null
   is_visible?: boolean
   created_at?: Date | string
@@ -621,7 +621,7 @@ export type ReviewUpdateManyWithWhereWithoutUserInput = {
 
 export type ReviewCreateManyMealInput = {
   id?: string
-  rating: number
+  rating: runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: string | null
   user_id: string
   is_visible?: boolean
@@ -631,7 +631,7 @@ export type ReviewCreateManyMealInput = {
 
 export type ReviewUpdateWithoutMealInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -641,7 +641,7 @@ export type ReviewUpdateWithoutMealInput = {
 
 export type ReviewUncheckedUpdateWithoutMealInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_id?: Prisma.StringFieldUpdateOperationsInput | string
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -651,7 +651,7 @@ export type ReviewUncheckedUpdateWithoutMealInput = {
 
 export type ReviewUncheckedUpdateManyWithoutMealInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user_id?: Prisma.StringFieldUpdateOperationsInput | string
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -662,7 +662,7 @@ export type ReviewUncheckedUpdateManyWithoutMealInput = {
 export type ReviewCreateManyUserInput = {
   id?: string
   meal_id: string
-  rating: number
+  rating: runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: string | null
   is_visible?: boolean
   created_at?: Date | string
@@ -671,7 +671,7 @@ export type ReviewCreateManyUserInput = {
 
 export type ReviewUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -682,7 +682,7 @@ export type ReviewUpdateWithoutUserInput = {
 export type ReviewUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   meal_id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -692,7 +692,7 @@ export type ReviewUncheckedUpdateWithoutUserInput = {
 export type ReviewUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   meal_id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -774,7 +774,7 @@ export type $ReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     meal_id: string
-    rating: number
+    rating: runtime.Decimal
     comment: string | null
     user_id: string
     is_visible: boolean
@@ -1207,7 +1207,7 @@ export interface Prisma__ReviewClient<T, Null = never, ExtArgs extends runtime.T
 export interface ReviewFieldRefs {
   readonly id: Prisma.FieldRef<"Review", 'String'>
   readonly meal_id: Prisma.FieldRef<"Review", 'String'>
-  readonly rating: Prisma.FieldRef<"Review", 'Int'>
+  readonly rating: Prisma.FieldRef<"Review", 'Decimal'>
   readonly comment: Prisma.FieldRef<"Review", 'String'>
   readonly user_id: Prisma.FieldRef<"Review", 'String'>
   readonly is_visible: Prisma.FieldRef<"Review", 'Boolean'>

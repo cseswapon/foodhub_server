@@ -4,7 +4,7 @@ model Review {
     meal_id String
     meal    Meal   @relation(fields: [meal_id], references: [id])
 
-    rating Int
+    rating Decimal @db.Decimal(10, 1)
 
     comment String?
 
