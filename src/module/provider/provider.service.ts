@@ -31,6 +31,34 @@ export class ProviderService {
     };
   };
 
+  getProviderme = async (req: Request) => {
+    const total = await this.db.provider.count();
+    const { page, limit, skip } = getPagination(req);
+    const total_page = Math.ceil(total / limit);
+
+    const providers = await this.db.provider.findMany({
+      where: {
+        user_id: req.user.id as string,
+      },
+      take: limit,
+      skip: skip,
+      orderBy: {
+        created_at: "asc",
+      },
+    });
+
+    return {
+      providers,
+      meta: {
+        total,
+        total_page,
+        current_page: page,
+        limit,
+        skip,
+      },
+    };
+  };
+
   getIdProvider = async (id: string) => {
     const provider = await this.db.provider.findUnique({
       where: {

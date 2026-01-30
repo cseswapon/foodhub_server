@@ -5,9 +5,12 @@ import { ProvidersController } from "./provider.controller";
 const router: Router = express.Router();
 const providerController = new ProvidersController();
 
+router.get("/", providerController.getAllProviders.bind(providerController));
+
 router.get(
-  "/",
-  providerController.getAllProviders.bind(providerController),
+  "/me",
+  authGuard("provider"),
+  providerController.getAllProvidersme.bind(providerController),
 );
 
 router.get(

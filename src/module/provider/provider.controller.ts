@@ -20,6 +20,19 @@ export class ProvidersController {
       });
     },
   );
+  getAllProvidersme = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const result = await this.providerService.getProviderme(req);
+
+      sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Retrieve my all providers",
+        data: result.providers,
+        meta: result.meta,
+      });
+    },
+  );
 
   getSingleProvider = catchAsync(
     async (req: Request,res: Response,next: NextFunction) => {
