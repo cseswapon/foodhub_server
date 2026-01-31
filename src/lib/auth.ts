@@ -20,11 +20,11 @@ export const auth = betterAuth({
     "https://foodhub-client-eight.vercel.app",
   ],
 
-  advanced: {
+  /* advanced: {
     crossSubDomainCookies: {
       enabled: true,
     },
-  },
+  }, */
   
   /* hooks: {
     after: async (ctx: any) => { 
