@@ -10,6 +10,7 @@
     "start": "node dist/server.js",
     "postinstall": "prisma generate",
     "seeding:admin": "tsx ./src/scripts/adminSeeding.ts",
+    "vercel:deploy":"vercel --prod",
     "migrate": "npx prisma migrate dev",
     "generate": "npx prisma generate",
     "deploy": "npx prisma migrate deploy",
