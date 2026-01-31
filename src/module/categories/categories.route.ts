@@ -19,19 +19,19 @@ router.get(
 
 router.post(
   "/",
-  authGuard("provider", "admin"),
+  authGuard("admin"),
   categoriesController.createCategory.bind(categoriesController),
 );
 
 router.patch(
   "/:id",
-  authGuard("provider", "admin"),
+  authGuard("admin"),
   categoriesController.updateCategory.bind(categoriesController),
 );
 
 router.delete(
   "/:id",
-  authGuard("provider","admin"),
+  authGuard("admin"),
   categoriesController.deleteCategory.bind(categoriesController),
 );
 

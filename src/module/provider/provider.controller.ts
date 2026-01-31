@@ -10,13 +10,25 @@ export class ProvidersController {
   getAllProviders = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const result = await this.providerService.getProvider(req);
-
       sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "Retrieve all providers",
         data: result.providers,
         meta: result.meta,
+      });
+    },
+  );
+  getAllProvidersMeal = catchAsync(
+    async (req: Request,res: Response,next: NextFunction) => {
+      const id = req.params.id as string;
+      const result = await this.providerService.getProviderMeal(req,id);
+
+      sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Retrieve all providers meal",
+        data: result.providers
       });
     },
   );
@@ -35,7 +47,7 @@ export class ProvidersController {
   );
 
   getSingleProvider = catchAsync(
-    async (req: Request,res: Response,next: NextFunction) => {
+    async (req: Request, res: Response, next: NextFunction) => {
       const result = await this.providerService.getIdProvider(
         req.params.id as string,
       );

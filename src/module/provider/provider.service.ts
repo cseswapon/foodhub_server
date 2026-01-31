@@ -31,6 +31,26 @@ export class ProviderService {
     };
   };
 
+  getProviderMeal = async (req: Request, id: string) => {
+    const providers = await this.db.provider.findUnique({
+      where: {
+        id,
+        meals: {
+          some: {
+            is_available: true,
+          },
+        },
+      },
+      include: {
+        meals: true,
+      },
+    });
+
+    return {
+      providers,
+    };
+  };
+
   getProviderme = async (req: Request) => {
     const total = await this.db.provider.count();
     const { page, limit, skip } = getPagination(req);
