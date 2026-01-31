@@ -1,8 +1,9 @@
-import { db as Database } from "@/db";
-import { DietaryType, Prisma } from "@/db/generated/client";
-import { MealWhereInput } from "@/db/generated/models";
-import { getPagination } from "@/utils/pagination";
+import { db as Database } from "../../db";
 import { Request } from "express";
+import { getPagination } from "../../utils/pagination";
+import { MealWhereInput } from "../../db/generated/models";
+import { DietaryType } from "../../db/generated/enums";
+import { Prisma } from "../../db/generated/client";
 
 export class MealService {
   private readonly db = Database;

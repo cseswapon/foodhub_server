@@ -1,8 +1,8 @@
-import { db as database } from "@/db";
-import { Prisma } from "@/db/generated/client";
-import { UserRole, UserStatus } from "@/db/generated/enums";
-import { getPagination } from "@/utils/pagination";
+import { db as database } from "../../db";
+import { Prisma } from "../../db/generated/client";
+import { UserRole, UserStatus } from "../../db/generated/enums";
 import { Request } from "express";
+import { getPagination } from "../../utils/pagination";
 
 interface IUserStatus {
   status: UserStatus;

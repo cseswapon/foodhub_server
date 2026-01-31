@@ -1,12 +1,12 @@
-import { db as Database } from "@/db";
+import { db as Database } from "../../db";
 import {
   Order_Item,
   OrderStatus,
   PaymentMethod,
   Prisma,
-} from "@/db/generated/client";
-import { getPagination } from "@/utils/pagination";
+} from "../../db/generated/client";
 import { Request } from "express";
+import { getPagination } from "../../utils/pagination";
 
 interface OrderItemInput {
   meal_id: string;

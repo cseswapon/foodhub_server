@@ -1,5 +1,5 @@
-import { config } from "@/config";
-import { db } from "@/db";
+import { config } from "../config";
+import { db } from "../db";
 
 (async () => {
   try {

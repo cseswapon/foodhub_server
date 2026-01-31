@@ -1,7 +1,7 @@
-import { db as Database } from "@/db";
-import { Prisma, Provider } from "@/db/generated/client";
-import { getPagination } from "@/utils/pagination";
+import { db as Database } from "../../db";
+import { Prisma, Provider } from "../../db/generated/client";
 import { Request } from "express";
+import { getPagination } from "../../utils/pagination";
 
 export class ProviderService {
   private readonly db = Database;

@@ -1,11 +1,11 @@
-import { catchAsync } from "@/utils/catchAsync";
-import { Request, Response } from "express";
+import  { Request, Response } from "express";
 import { DashboardService } from "./dashboard.service";
-import { sendResponse } from "@/utils/sendResponse";
-import httpStatus from 'http-status-codes'
+import httpStatus from "http-status-codes";
+import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
 
 export class DashboardController {
-    private readonly dashboardService = new DashboardService();
+  private readonly dashboardService = new DashboardService();
   getStatic = catchAsync(async (req: Request, res: Response) => {
     const result = await this.dashboardService.getStatic(req);
 

@@ -1,7 +1,7 @@
-import { db as Database } from "@/db";
-import { Prisma } from "@/db/generated/client";
-import { getPagination } from "@/utils/pagination";
-import { Request } from "express";
+import { db as Database } from "../../db";
+import  { Request } from "express";
+import { getPagination } from "../../utils/pagination";
+import { Prisma } from "../../db/generated/client";
 
 export class CategoriesService {
   private readonly db = Database;

@@ -1,11 +1,12 @@
-import { config } from "./config/index.js";
-import { db } from "./db/index.js";
-import app from "./index.js";
+
+import app from "./app";
+import { config } from "./config";
+import { db } from "./db";
 
 (async () => {
   try {
+    await db.$connect();
     app.listen(config.PORT, async () => {
-      await db.$connect();
       console.log("🚀 DB connected 🚀");
       console.log(`🚀 Server started on http://localhost:${config.PORT} 🚀`);
     });

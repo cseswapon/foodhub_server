@@ -1,5 +1,5 @@
-import { config } from "@/config";
-import { db } from "@/db";
+import { config } from "../config";
+import { db } from "../db";
 import { betterAuth, string } from "better-auth";
 
 import { prismaAdapter } from "better-auth/adapters/prisma";

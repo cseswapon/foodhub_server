@@ -1,9 +1,9 @@
-import { catchAsync } from "@/utils/catchAsync";
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
-import { sendResponse } from "@/utils/sendResponse";
 import { ReviewService } from "./review.service";
-import { UserRole } from "@/db/generated/enums";
+import { UserRole } from "../..//db/generated/enums";
+import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
 export class ReviewsController {
   private reviewService = new ReviewService();
 

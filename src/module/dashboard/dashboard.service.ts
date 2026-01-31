@@ -1,7 +1,6 @@
-import { db as Database } from "@/db";
-import { UserRole } from "@/db/generated/enums";
-import { OrderStatus } from "@/db/generated/enums";
+import { db as Database } from "../../db";
 import { Request } from "express";
+import { OrderStatus, UserRole } from "../../db/generated/enums";
 
 export class DashboardService {
   private readonly db = Database;

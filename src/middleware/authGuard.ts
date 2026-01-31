@@ -1,5 +1,5 @@
-import { UserRole } from "@/db/generated/enums";
-import { auth } from "@/lib/auth";
+import { UserRole } from "../db/generated/enums";
+import { auth } from "../lib/auth";
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 
