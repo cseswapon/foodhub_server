@@ -4,6 +4,13 @@ import httpStatus10 from "http-status-codes";
 import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 
+// src/lib/auth.ts
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+
+// src/db/index.ts
+import { PrismaPg } from "@prisma/adapter-pg";
+
 // src/config/index.ts
 import dotenv from "dotenv";
 dotenv.config();
@@ -17,9 +24,6 @@ var config = {
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
   ADMIN_PHONE: process.env.ADMIN_PHONE
 };
-
-// src/db/index.ts
-import { PrismaPg } from "@prisma/adapter-pg";
 
 // src/db/generated/client.ts
 import * as path from "path";
@@ -92,8 +96,8 @@ var adapter = new PrismaPg({ connectionString });
 var db = new PrismaClient({ adapter });
 
 // src/lib/auth.ts
-import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
+import { config as config3 } from "dotenv";
+config3();
 var auth = betterAuth({
   rateLimit: {
     enabled: true,
@@ -103,12 +107,11 @@ var auth = betterAuth({
   database: prismaAdapter(db, {
     provider: "postgresql"
   }),
-  trustedOrigins: [config.APP_URL],
+  trustedOrigins: ["*"],
   user: {
     additionalFields: {
       role: {
         type: ["customer", "provider", "admin"],
-        required: false,
         defaultValue: "customer"
       },
       phone: {
@@ -121,7 +124,6 @@ var auth = betterAuth({
       },
       status: {
         type: ["activate", "suspend"],
-        required: false,
         defaultValue: "activate"
       }
     }
@@ -1742,7 +1744,10 @@ app.use(express9.json());
 app.use(express9.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [
+      "http://localhost:3000",
+      "https://foodhub-client-eight.vercel.app"
+    ],
     credentials: true
   })
 );
