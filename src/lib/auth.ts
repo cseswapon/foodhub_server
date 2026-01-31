@@ -15,7 +15,16 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
 
-  trustedOrigins:["*"],
+  trustedOrigins: [
+    "http://localhost:3000",
+    "https://foodhub-client-eight.vercel.app",
+  ],
+
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: true,
+    },
+  },
 
   user: {
     additionalFields: {

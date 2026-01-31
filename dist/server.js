@@ -107,7 +107,15 @@ var auth = betterAuth({
   database: prismaAdapter(db, {
     provider: "postgresql"
   }),
-  trustedOrigins: ["*"],
+  trustedOrigins: [
+    "http://localhost:3000",
+    "https://foodhub-client-eight.vercel.app"
+  ],
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: true
+    }
+  },
   user: {
     additionalFields: {
       role: {
