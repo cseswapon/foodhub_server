@@ -19,7 +19,7 @@ export class ProvidersController {
       });
     },
   );
-  getAllProvidersMeal = catchAsync(
+  /* getAllProvidersMeal = catchAsync(
     async (req: Request,res: Response,next: NextFunction) => {
       const id = req.params.id as string;
       const result = await this.providerService.getProviderMeal(req,id);
@@ -31,7 +31,7 @@ export class ProvidersController {
         data: result.providers
       });
     },
-  );
+  ); */
   getAllProvidersme = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const result = await this.providerService.getProviderme(req);

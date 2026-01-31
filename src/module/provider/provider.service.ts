@@ -31,7 +31,7 @@ export class ProviderService {
     };
   };
 
-  getProviderMeal = async (req: Request, id: string) => {
+/*   getProviderMeal = async (req: Request, id: string) => {
     const providers = await this.db.provider.findUnique({
       where: {
         id,
@@ -49,7 +49,7 @@ export class ProviderService {
     return {
       providers,
     };
-  };
+  }; */
 
   getProviderme = async (req: Request) => {
     const total = await this.db.provider.count();
@@ -85,6 +85,7 @@ export class ProviderService {
         id,
       },
       include: {
+        meals:true,
         user: {
           select: {
             name: true,

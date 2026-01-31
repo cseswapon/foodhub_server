@@ -6,7 +6,7 @@ const router: Router = express.Router();
 const providerController = new ProvidersController();
 
 router.get("/", providerController.getAllProviders.bind(providerController));
-router.get("/meal/:id", providerController.getAllProvidersMeal.bind(providerController));
+// router.get("/meal/:id", providerController.getAllProvidersMeal.bind(providerController));
 
 router.get(
   "/me",
