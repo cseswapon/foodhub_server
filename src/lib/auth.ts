@@ -26,7 +26,7 @@ export const auth = betterAuth({
     },
   },
   
-  hooks: {
+  /* hooks: {
     after: async (ctx: any) => { 
       const setCookie = ctx.response.headers.get("set-cookie");
       if (setCookie && process.env.NODE_ENV === "production") {
@@ -38,7 +38,7 @@ export const auth = betterAuth({
       }
       return ctx;
     }
-  },
+  }, */
 
   user: {
     additionalFields: {

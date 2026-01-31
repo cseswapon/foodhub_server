@@ -116,19 +116,19 @@ var auth = betterAuth({
       enabled: true
     }
   },
-  hooks: {
-    after: async (ctx) => {
+  /* hooks: {
+    after: async (ctx: any) => { 
       const setCookie = ctx.response.headers.get("set-cookie");
       if (setCookie && process.env.NODE_ENV === "production") {
         const newCookie = setCookie.replace(
           /SameSite=Lax/g,
-          "SameSite=None; Secure"
+          "SameSite=None; Secure",
         );
         ctx.response.headers.set("set-cookie", newCookie);
       }
       return ctx;
     }
-  },
+  }, */
   user: {
     additionalFields: {
       role: {
