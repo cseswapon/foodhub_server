@@ -133,8 +133,6 @@ export class OrderService {
               select: {
                 name: true,
                 price: true,
-                reviews: true,
-                category: true,
               },
             },
           },
