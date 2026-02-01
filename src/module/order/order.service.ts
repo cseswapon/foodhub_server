@@ -101,6 +101,11 @@ export class OrderService {
         },
       },
       include: {
+        meal: {
+          select: {
+            name: true,
+          },
+        },
         order: {
           select: {
             user_id: true,
