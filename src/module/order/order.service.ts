@@ -129,6 +129,7 @@ export class OrderService {
         user: true,
         orderItems: {
           select: {
+            quantity: true,
             meal: {
               select: {
                 name: true,
