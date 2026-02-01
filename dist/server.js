@@ -111,11 +111,11 @@ var auth = betterAuth({
     "http://localhost:3000",
     "https://foodhub-client-eight.vercel.app"
   ],
-  advanced: {
+  /* advanced: {
     crossSubDomainCookies: {
-      enabled: true
-    }
-  },
+      enabled: true,
+    },
+  }, */
   /* hooks: {
     after: async (ctx: any) => { 
       const setCookie = ctx.response.headers.get("set-cookie");
@@ -550,12 +550,10 @@ var router2 = express2.Router();
 var categoriesController = new CategoriesController();
 router2.get(
   "/all",
-  authGuard(),
   categoriesController.getAllCategories.bind(categoriesController)
 );
 router2.get(
   "/:id",
-  authGuard(),
   categoriesController.getSingleCategory.bind(categoriesController)
 );
 router2.post(
@@ -1146,6 +1144,11 @@ var OrderService = class {
         }
       },
       include: {
+        meal: {
+          select: {
+            name: true
+          }
+        },
         order: {
           select: {
             user_id: true
@@ -1165,7 +1168,17 @@ var OrderService = class {
       include: {
         provider: true,
         user: true,
-        orderItems: true
+        orderItems: {
+          select: {
+            quantity: true,
+            meal: {
+              select: {
+                name: true,
+                price: true
+              }
+            }
+          }
+        }
       }
     });
     return order;
@@ -1213,6 +1226,7 @@ var OrderService = class {
     return result;
   };
   updateOrder = async (id, data, role, userId) => {
+    console.log(id, data, role);
     const order = await this.db.order.findUnique({
       where: { id },
       include: {
@@ -1233,7 +1247,7 @@ var OrderService = class {
       if (data.status !== "cancelled") {
         throw new Error("Customer can only cancel orders");
       }
-      if (!["preparing", "ready", "delivered"].includes(order.status)) {
+      if (["preparing", "ready", "delivered"].includes(order.status)) {
         throw new Error("Order can\u2019t be cancelled at this stage");
       }
       if (order.user_id !== userId) {
