@@ -203,6 +203,7 @@ export class OrderService {
     role: "customer" | "provider" | "admin",
     userId: string,
   ) => {
+    console.log(id,data,role);
     const order = await this.db.order.findUnique({
       where: { id },
       include: {
@@ -226,7 +227,7 @@ export class OrderService {
         throw new Error("Customer can only cancel orders");
       }
 
-      if (!["preparing", "ready", "delivered"].includes(order.status)) {
+      if (["preparing", "ready", "delivered"].includes(order.status)) {
         throw new Error("Order can’t be cancelled at this stage");
       }
 
