@@ -34,6 +34,15 @@ export class UserController {
       },
     });
   });
+  getUsersDetails = catchAsync(async (req: Request, res: Response) => {
+    const { users } = await this.userService.getUsersDetails(req);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Users Details",
+      data: users,
+    });
+  });
 
   updateUser = catchAsync(async (req: Request, res: Response) => {
     const body = req.body;

@@ -52,6 +52,17 @@ export class UserServices {
       },
     };
   }
+  async getUsersDetails(req: Request) {
+    const id = req.params.id as string;
+    const users = await this.db.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    return {
+      users,
+    };
+  }
 
   async updateStatusRole(id: string, data: Partial<IUserStatus>) {
     const updateData: Partial<IUserStatus> = {};
