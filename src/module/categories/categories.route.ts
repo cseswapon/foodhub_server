@@ -7,13 +7,11 @@ const categoriesController = new CategoriesController();
 
 router.get(
   "/all",
-  authGuard(),
   categoriesController.getAllCategories.bind(categoriesController),
 );
 
 router.get(
   "/:id",
-  authGuard(),
   categoriesController.getSingleCategory.bind(categoriesController),
 );
 
