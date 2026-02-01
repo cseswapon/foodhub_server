@@ -11,6 +11,11 @@ router.get(
   authGuard("admin"),
   userController.getUsers.bind(userController),
 );
+router.get(
+  "/users/:id",
+  authGuard("admin"),
+  userController.getUsersDetails.bind(userController),
+);
 
 router.patch(
   "/users/:id",
