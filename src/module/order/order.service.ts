@@ -127,7 +127,18 @@ export class OrderService {
       include: {
         provider: true,
         user: true,
-        orderItems: true,
+        orderItems: {
+          select: {
+            meal: {
+              select: {
+                name: true,
+                price: true,
+                reviews: true,
+                category: true,
+              },
+            },
+          },
+        },
       },
     });
     return order;
