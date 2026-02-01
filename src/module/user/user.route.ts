@@ -17,5 +17,10 @@ router.patch(
   authGuard("admin"),
   userController.updateUser.bind(userController),
 );
+router.delete(
+  "/users/:id",
+  authGuard("admin"),
+  userController.deleteUser.bind(userController),
+);
 
 export default router;

@@ -55,10 +55,29 @@ export class UserController {
     });
   });
 
+  deleteUser = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id as string;
+    if (req.user.role?.includes("admin") && req.user.id === id) {
+      return sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Admin can't change won status",
+        data: null,
+      });
+    }
+    const deleteUser = await this.userService.deleteUser(id);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "User delete successfully",
+      data: deleteUser,
+    });
+  });
+
   updateProfile = catchAsync(async (req: Request, res: Response) => {
-    const userId = req.user.id as string; 
+    const userId = req.user.id as string;
     const body: { name?: string; phone?: string; address?: string } = req.body;
-  
+
     if (!body.name && !body.phone && !body.address) {
       return sendResponse(res, {
         success: false,

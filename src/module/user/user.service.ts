@@ -87,9 +87,29 @@ export class UserServices {
     return user;
   }
 
-  async updateProfile(userId: string,data: Prisma.UserUpdateInput) {
+  async deleteUser(id: string) {
+    const isExistUser = await this.db.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    if (!isExistUser) {
+      throw Error("User't found");
+    }
+    if (isExistUser?.role === "admin") {
+      throw Error("Don't delete");
+    }
+    const deleteUser = await this.db.user.delete({
+      where: {
+        id: id,
+      },
+    });
+    return deleteUser;
+  }
+
+  async updateProfile(userId: string, data: Prisma.UserUpdateInput) {
     if (data.role || data.emailVerified || data.status) {
-      return "This payload not supported"
+      return "This payload not supported";
     }
     const updateUser = await this.db.user.update({
       where: { id: userId },
