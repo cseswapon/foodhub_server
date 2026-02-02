@@ -33,7 +33,7 @@ router.patch(
 
 router.delete(
   "/:id",
-  authGuard("admin"),
+  authGuard("admin", "provider"),
   providerController.deleteProvider.bind(providerController),
 );
 
