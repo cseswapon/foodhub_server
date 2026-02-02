@@ -250,6 +250,17 @@ var UserServices = class {
       }
     };
   }
+  async getUsersDetails(req) {
+    const id = req.params.id;
+    const users = await this.db.user.findUnique({
+      where: {
+        id
+      }
+    });
+    return {
+      users
+    };
+  }
   async updateStatusRole(id, data) {
     const updateData = {};
     if (data.role === "admin") {
@@ -277,6 +288,25 @@ var UserServices = class {
       }
     });
     return user;
+  }
+  async deleteUser(id) {
+    const isExistUser = await this.db.user.findUnique({
+      where: {
+        id
+      }
+    });
+    if (!isExistUser) {
+      throw Error("User't found");
+    }
+    if (isExistUser?.role === "admin") {
+      throw Error("Don't delete");
+    }
+    const deleteUser = await this.db.user.delete({
+      where: {
+        id
+      }
+    });
+    return deleteUser;
   }
   async updateProfile(userId, data) {
     if (data.role || data.emailVerified || data.status) {
@@ -350,6 +380,15 @@ var UserController = class {
       }
     });
   });
+  getUsersDetails = catchAsync(async (req, res) => {
+    const { users } = await this.userService.getUsersDetails(req);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus2.OK,
+      message: "Users Details",
+      data: users
+    });
+  });
   updateUser = catchAsync(async (req, res) => {
     const body = req.body;
     const id = req.params.id;
@@ -367,6 +406,24 @@ var UserController = class {
       statusCode: httpStatus2.OK,
       message: "User update successfully",
       data: updateUser
+    });
+  });
+  deleteUser = catchAsync(async (req, res) => {
+    const id = req.params.id;
+    if (req.user.role?.includes("admin") && req.user.id === id) {
+      return sendResponse(res, {
+        success: true,
+        statusCode: httpStatus2.OK,
+        message: "Admin can't change won status",
+        data: null
+      });
+    }
+    const deleteUser = await this.userService.deleteUser(id);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus2.OK,
+      message: "User delete successfully",
+      data: deleteUser
     });
   });
   updateProfile = catchAsync(async (req, res) => {
@@ -397,10 +454,20 @@ router.get(
   authGuard("admin"),
   userController.getUsers.bind(userController)
 );
+router.get(
+  "/users/:id",
+  authGuard("admin"),
+  userController.getUsersDetails.bind(userController)
+);
 router.patch(
   "/users/:id",
   authGuard("admin"),
   userController.updateUser.bind(userController)
+);
+router.delete(
+  "/users/:id",
+  authGuard("admin"),
+  userController.deleteUser.bind(userController)
 );
 var user_route_default = router;
 
@@ -830,7 +897,7 @@ router3.patch(
 );
 router3.delete(
   "/:id",
-  authGuard("admin"),
+  authGuard("admin", "provider"),
   providerController.deleteProvider.bind(providerController)
 );
 var provider_route_default = router3;
@@ -913,11 +980,71 @@ var MealService = class {
       }
     };
   };
+  getMealme = async (req) => {
+    const total = await this.db.meal.count({
+      where: {
+        provider: {
+          user_id: req.user.id
+        }
+      }
+    });
+    const { page, limit, skip } = getPagination(req);
+    const total_page = Math.ceil(total / limit);
+    const meals = await this.db.meal.findMany({
+      where: {
+        provider: {
+          user_id: req.user.id
+        }
+      },
+      take: limit,
+      skip,
+      orderBy: {
+        created_at: "asc"
+      }
+    });
+    return {
+      meals,
+      meta: {
+        total,
+        total_page,
+        current_page: page,
+        limit,
+        skip
+      }
+    };
+  };
   getIdMeal = async (id) => {
     const meal = await this.db.meal.findFirst({
       where: {
         id,
         is_available: true
+      },
+      include: {
+        category: true,
+        provider: true,
+        reviews: {
+          where: {
+            is_visible: true
+          },
+          select: {
+            comment: true,
+            rating: true,
+            created_at: true,
+            user: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
+    });
+    return meal;
+  };
+  getSingleMealProvider = async (id) => {
+    const meal = await this.db.meal.findFirst({
+      where: {
+        id
       },
       include: {
         category: true,
@@ -987,10 +1114,36 @@ var MealsController = class {
       });
     }
   );
+  getAllMealsme = catchAsync(
+    async (req, res, next) => {
+      const result = await this.providerService.getMealme(req);
+      sendResponse(res, {
+        statusCode: httpStatus5.OK,
+        success: true,
+        message: "Retrieve all meals",
+        data: result.meals,
+        meta: result.meta
+      });
+    }
+  );
   getSingleMeal = catchAsync(
     async (req, res, next) => {
       const { id } = req.params;
       const result = await this.providerService.getIdMeal(id);
+      sendResponse(res, {
+        statusCode: httpStatus5.OK,
+        success: true,
+        message: "Retrieve single meal",
+        data: result
+      });
+    }
+  );
+  getSingleMealProvider = catchAsync(
+    async (req, res, next) => {
+      const { id } = req.params;
+      const result = await this.providerService.getSingleMealProvider(
+        id
+      );
       sendResponse(res, {
         statusCode: httpStatus5.OK,
         success: true,
@@ -1013,7 +1166,10 @@ var MealsController = class {
   updateMeal = catchAsync(
     async (req, res, next) => {
       const { id } = req.params;
-      const result = await this.providerService.updateMeal(id, req.body);
+      const result = await this.providerService.updateMeal(
+        id,
+        req.body
+      );
       sendResponse(res, {
         statusCode: httpStatus5.OK,
         success: true,
@@ -1039,13 +1195,17 @@ var MealsController = class {
 // src/module/meal/meal.route.ts
 var router4 = express4.Router();
 var providerController2 = new MealsController();
+router4.get("/", providerController2.getAllMeals.bind(providerController2));
 router4.get(
-  "/",
-  providerController2.getAllMeals.bind(providerController2)
+  "/me",
+  authGuard(),
+  providerController2.getAllMealsme.bind(providerController2)
 );
+router4.get("/:id", providerController2.getSingleMeal.bind(providerController2));
 router4.get(
-  "/:id",
-  providerController2.getSingleMeal.bind(providerController2)
+  "/provider/:id",
+  authGuard(),
+  providerController2.getSingleMealProvider.bind(providerController2)
 );
 router4.post(
   "/",
@@ -1059,7 +1219,7 @@ router4.patch(
 );
 router4.delete(
   "/:id",
-  authGuard("admin"),
+  authGuard("admin", "provider"),
   providerController2.deleteMeal.bind(providerController2)
 );
 var meal_route_default = router4;
@@ -1414,9 +1574,12 @@ var ReviewService = class {
     const userId = req.user.id;
     const role = req.user.role;
     const { page, limit, skip } = getPagination(req);
-    const whereCondition = {
-      is_visible: true
-    };
+    let whereCondition = {};
+    if (role !== "admin") {
+      whereCondition = {
+        is_visible: true
+      };
+    }
     if (role === "customer") {
       whereCondition.user_id = userId;
     }
