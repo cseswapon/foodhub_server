@@ -1,8 +1,11 @@
 model Meal {
     id String @id @default(uuid())
 
-    provider_id String
-    provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
+    // provider_id String
+    // provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
+
+    user_id String
+    user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
     category_id String
     category    Categories @relation(fields: [category_id], references: [id], onDelete: Cascade)
@@ -17,7 +20,7 @@ model Meal {
     updated_at DateTime @updatedAt
 
     orderItems Order_Item[]
-    reviews Review[]
+    reviews    Review[]
 
     @@index([dietary_type])
     @@index([name])

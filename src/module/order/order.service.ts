@@ -35,11 +35,11 @@ export class OrderService {
     }
 
     // provider → orders for provider whose user_id = req.user.id
-    if (req.user.role === "provider") {
+    /* if (req.user.role === "provider") {
       where.provider = {
         user_id: req.user.id as string,
       };
-    }
+    } */
 
     const total = await this.db.order.count({ where });
     const { page, limit, skip } = getPagination(req);
@@ -53,15 +53,15 @@ export class OrderService {
         created_at: "desc",
       },
       include: {
-        provider: {
-          select: {
-            id: true,
-            user_id: true,
-            restaurant_name: true,
-            address: true,
-            is_open: true,
-          },
-        },
+        // provider: {
+        //   select: {
+        //     id: true,
+        //     user_id: true,
+        //     restaurant_name: true,
+        //     address: true,
+        //     is_open: true,
+        //   },
+        // },
         orderItems: {
           include: {
             meal: {
@@ -125,7 +125,7 @@ export class OrderService {
         id,
       },
       include: {
-        provider: true,
+        // provider: true,
         user: true,
         orderItems: {
           select: {
@@ -147,21 +147,14 @@ export class OrderService {
     const userId = req.user.id as string;
 
     const {
-      provider_id,
       delivery_address,
       payment_method,
       items,
     }: {
-      provider_id: string;
       delivery_address: string;
       payment_method: PaymentMethod;
       items: OrderItemInput[];
     } = req.body;
-
-    const providerExists = await this.db.provider.findUnique({
-      where: { id: provider_id },
-    });
-    if (!providerExists) throw new Error("Provider not found");
 
     for (const item of items) {
       const mealExists = await this.db.meal.findUnique({
@@ -178,7 +171,6 @@ export class OrderService {
     const result = await this.db.order.create({
       data: {
         user: { connect: { id: userId } },
-        provider: { connect: { id: provider_id } },
         delivery_address,
         payment_method,
         total_price,
@@ -203,15 +195,15 @@ export class OrderService {
     role: "customer" | "provider" | "admin",
     userId: string,
   ) => {
-    console.log(id,data,role);
+    console.log(id, data, role);
     const order = await this.db.order.findUnique({
       where: { id },
       include: {
-        provider: {
-          select: {
-            user_id: true,
-          },
-        },
+        // provider: {
+        //   select: {
+        //     user_id: true,
+        //   },
+        // },
       },
     });
     // console.log(order);
@@ -245,9 +237,9 @@ export class OrderService {
         throw new Error("Invalid status update by provider");
       }
 
-      if (order.provider.user_id !== userId) {
+      /*  if (order.provider.user_id !== userId) {
         throw new Error("Unauthorized provider access");
-      }
+      } */
     }
     return this.db.order.update({
       where: { id },

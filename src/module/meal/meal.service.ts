@@ -88,9 +88,7 @@ export class MealService {
   getMealme = async (req: Request) => {
     const total = await this.db.meal.count({
       where: {
-        provider: {
-          user_id: req.user.id as string,
-        },
+        user_id: req.user.id as string,
       },
     });
 
@@ -99,9 +97,7 @@ export class MealService {
 
     const meals = await this.db.meal.findMany({
       where: {
-        provider: {
-          user_id: req.user.id as string,
-        },
+        user_id: req.user.id as string,
       },
       take: limit,
       skip: skip,
@@ -130,7 +126,8 @@ export class MealService {
       },
       include: {
         category: true,
-        provider: true,
+        user: true,
+        // provider: true,
         reviews: {
           where: {
             is_visible: true,
@@ -157,7 +154,8 @@ export class MealService {
       },
       include: {
         category: true,
-        provider: true,
+        // provider: true,
+        user: true,
         reviews: {
           where: {
             is_visible: true,
@@ -179,6 +177,7 @@ export class MealService {
   };
 
   createMeal = async (data: Prisma.MealCreateInput) => {
+    // console.log(data);
     const result = await this.db.meal.create({
       data,
     });
@@ -196,6 +195,7 @@ export class MealService {
   };
 
   deleteMeal = async (id: string) => {
+    console.log(id);
     return this.db.$transaction(async (t) => {
       const meal = await t.meal.findUnique({
         where: { id },

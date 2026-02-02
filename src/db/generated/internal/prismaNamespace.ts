@@ -1249,7 +1249,7 @@ export type CategoriesScalarFieldEnum = (typeof CategoriesScalarFieldEnum)[keyof
 
 export const MealScalarFieldEnum = {
   id: 'id',
-  provider_id: 'provider_id',
+  user_id: 'user_id',
   category_id: 'category_id',
   name: 'name',
   description: 'description',
@@ -1266,7 +1266,6 @@ export type MealScalarFieldEnum = (typeof MealScalarFieldEnum)[keyof typeof Meal
 export const OrderScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
-  provider_id: 'provider_id',
   total_price: 'total_price',
   delivery_address: 'delivery_address',
   payment_method: 'payment_method',

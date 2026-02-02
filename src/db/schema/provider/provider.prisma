@@ -14,8 +14,8 @@ model Provider {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    meals  Meal[]
-    orders Order[]
+    // meals  Meal[]
+    // orders Order[]
 
     @@map("providers")
 }

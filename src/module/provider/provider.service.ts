@@ -11,11 +11,14 @@ export class ProviderService {
     const { page, limit, skip } = getPagination(req);
     const total_page = Math.ceil(total / limit);
 
-    const providers = await this.db.provider.findMany({
+    const providers = await this.db.user.findMany({
+      where: {
+        role: "provider",
+      },
       take: limit,
       skip: skip,
       orderBy: {
-        created_at: "asc",
+        createdAt: "asc",
       },
     });
 
@@ -31,7 +34,7 @@ export class ProviderService {
     };
   };
 
-/*   getProviderMeal = async (req: Request, id: string) => {
+  /*   getProviderMeal = async (req: Request, id: string) => {
     const providers = await this.db.provider.findUnique({
       where: {
         id,
@@ -80,23 +83,34 @@ export class ProviderService {
   };
 
   getIdProvider = async (id: string) => {
-    const provider = await this.db.provider.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        meals:true,
-        user: {
-          select: {
-            name: true,
-            email: true,
-            phone: true,
-            address: true,
+    try {
+      const result = await this.db.$transaction(async (tx) => {
+        const provider = await tx.user.findUnique({
+          where: { id },
+        });
+
+        if (!provider) {
+          throw new Error("Provider not found");
+        }
+
+        const meals = await tx.meal.findMany({
+          where: { user_id: id },
+          include: {
+            category: true,
           },
-        },
-      },
-    });
-    return provider;
+        });
+
+        return {
+          provider,
+          meals,
+        };
+      });
+
+      return result;
+    } catch (error) {
+      console.error("Error in getIdProvider transaction:", error);
+      throw error;
+    }
   };
 
   createProvider = async (
@@ -132,13 +146,13 @@ export class ProviderService {
 
   deleteProvider = async (id: string) => {
     return this.db.$transaction(async (t) => {
-      const provider = await t.provider.findUnique({
+      /* const provider = await t.provider.findUnique({
         where: { id },
-      });
+      }); */
 
-      if (!provider) {
+      /*  if (!provider) {
         throw new Error("Provider not found");
-      }
+      } */
 
       await t.provider.delete({
         where: { id },

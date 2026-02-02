@@ -15,6 +15,7 @@ model User {
   provider      Provider[]
   orders        Order[]
   reviews       Review[]
+  meals         Meal[]
 
   @@unique([email])
   @@map("users")

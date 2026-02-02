@@ -9,7 +9,6 @@ export class DashboardService {
     const { role, id } = req.user as { role: UserRole; id: string };
 
     return this.db.$transaction(async (t) => {
-
       const userFilter = (
         status?: "activate" | "suspend",
         userRole?: UserRole,
@@ -21,14 +20,12 @@ export class DashboardService {
         return filter;
       };
 
-    
       const orderFilter = (status: OrderStatus) => {
         return role === "admin" ? { status } : { status, provider_id: id };
       };
 
-     
       const mealFilter = () => {
-        return role === "admin" ? {} : { provider_id: id };
+        return role === "admin" ? {} : { user_id: id };
       };
 
       const [
