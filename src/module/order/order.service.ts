@@ -29,19 +29,24 @@ export class OrderService {
       where.status = status.toLowerCase() as OrderStatus;
     }
 
-    // customer → own orders
+    // customer → only own orders
     if (req.user.role === "customer") {
       where.user_id = req.user.id as string;
     }
 
-    // provider → orders for provider whose user_id = req.user.id
-    /* if (req.user.role === "provider") {
-      where.provider = {
-        user_id: req.user.id as string,
+    // provider → orders that contain provider's meals
+    if (req.user.role === "provider") {
+      where.orderItems = {
+        some: {
+          meal: {
+            user_id: req.user.id,
+          },
+        },
       };
-    } */
+    }
 
     const total = await this.db.order.count({ where });
+
     const { page, limit, skip } = getPagination(req);
     const total_page = Math.ceil(total / limit);
 
@@ -53,21 +58,13 @@ export class OrderService {
         created_at: "desc",
       },
       include: {
-        // provider: {
-        //   select: {
-        //     id: true,
-        //     user_id: true,
-        //     restaurant_name: true,
-        //     address: true,
-        //     is_open: true,
-        //   },
-        // },
         orderItems: {
           include: {
             meal: {
               select: {
                 name: true,
                 price: true,
+                user_id: true,
               },
             },
           },
