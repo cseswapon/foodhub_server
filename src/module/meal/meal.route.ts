@@ -14,6 +14,12 @@ router.get(
 
 router.get("/:id", providerController.getSingleMeal.bind(providerController));
 
+router.get(
+  "/provider/:id",
+  authGuard(),
+  providerController.getSingleMealProvider.bind(providerController),
+);
+
 router.post(
   "/",
   authGuard("provider", "admin"),

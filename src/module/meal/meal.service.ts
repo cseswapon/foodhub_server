@@ -150,6 +150,33 @@ export class MealService {
     });
     return meal;
   };
+  getSingleMealProvider = async (id: string) => {
+    const meal = await this.db.meal.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        category: true,
+        provider: true,
+        reviews: {
+          where: {
+            is_visible: true,
+          },
+          select: {
+            comment: true,
+            rating: true,
+            created_at: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return meal;
+  };
 
   createMeal = async (data: Prisma.MealCreateInput) => {
     const result = await this.db.meal.create({

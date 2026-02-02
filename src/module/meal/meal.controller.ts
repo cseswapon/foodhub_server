@@ -46,6 +46,21 @@ export class MealsController {
       });
     },
   );
+  getSingleMealProvider = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { id } = req.params;
+      const result = await this.providerService.getSingleMealProvider(
+        id as string,
+      );
+
+      sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Retrieve single meal",
+        data: result,
+      });
+    },
+  );
 
   createMeal = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
