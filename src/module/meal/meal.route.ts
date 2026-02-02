@@ -5,15 +5,14 @@ import { MealsController } from "./meal.controller";
 const router: Router = express.Router();
 const providerController = new MealsController();
 
+router.get("/", providerController.getAllMeals.bind(providerController));
 router.get(
-  "/",
-  providerController.getAllMeals.bind(providerController),
+  "/me",
+  authGuard(),
+  providerController.getAllMealsme.bind(providerController),
 );
 
-router.get(
-  "/:id",
-  providerController.getSingleMeal.bind(providerController),
-);
+router.get("/:id", providerController.getSingleMeal.bind(providerController));
 
 router.post(
   "/",

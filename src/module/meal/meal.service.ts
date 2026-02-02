@@ -85,6 +85,42 @@ export class MealService {
       },
     };
   };
+  getMealme = async (req: Request) => {
+    const total = await this.db.meal.count({
+      where: {
+        provider: {
+          user_id: req.user.id as string,
+        },
+      },
+    });
+
+    const { page, limit, skip } = getPagination(req);
+    const total_page = Math.ceil(total / limit);
+
+    const meals = await this.db.meal.findMany({
+      where: {
+        provider: {
+          user_id: req.user.id as string,
+        },
+      },
+      take: limit,
+      skip: skip,
+      orderBy: {
+        created_at: "asc",
+      },
+    });
+
+    return {
+      meals,
+      meta: {
+        total,
+        total_page,
+        current_page: page,
+        limit,
+        skip,
+      },
+    };
+  };
 
   getIdMeal = async (id: string) => {
     const meal = await this.db.meal.findFirst({

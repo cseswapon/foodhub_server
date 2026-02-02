@@ -1,4 +1,3 @@
-
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { MealService } from "./meal.service";
@@ -10,6 +9,19 @@ export class MealsController {
   getAllMeals = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const result = await this.providerService.getMeal(req);
+
+      sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Retrieve all meals",
+        data: result.meals,
+        meta: result.meta,
+      });
+    },
+  );
+  getAllMealsme = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const result = await this.providerService.getMealme(req);
 
       sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -51,7 +63,10 @@ export class MealsController {
   updateMeal = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const { id } = req.params;
-      const result = await this.providerService.updateMeal(id as string, req.body);
+      const result = await this.providerService.updateMeal(
+        id as string,
+        req.body,
+      );
 
       sendResponse(res, {
         statusCode: httpStatus.OK,
