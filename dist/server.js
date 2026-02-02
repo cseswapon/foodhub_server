@@ -209,7 +209,7 @@ import httpStatus2 from "http-status-codes";
 // src/utils/pagination.ts
 var getPagination = (req) => {
   const page = Math.max(Number(req.query.page) || 1, 1);
-  const limit = Math.max(Number(req.query.limit) || 10, 1);
+  const limit = Math.max(Number(req.query.limit) || 1e3, 1);
   const skip = (page - 1) * limit;
   return { page, limit, skip };
 };
