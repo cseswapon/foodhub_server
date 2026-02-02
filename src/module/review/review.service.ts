@@ -12,9 +12,13 @@ export class ReviewService {
 
     const { page, limit, skip } = getPagination(req);
 
-    const whereCondition: Prisma.ReviewWhereInput = {
-      is_visible: true,
-    };
+    let whereCondition: Prisma.ReviewWhereInput = {};
+
+    if (role !== "admin") {
+      whereCondition = {
+        is_visible: true,
+      };
+    }
 
     if (role === "customer") {
       whereCondition.user_id = userId;
