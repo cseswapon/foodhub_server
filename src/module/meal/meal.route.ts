@@ -34,7 +34,7 @@ router.patch(
 
 router.delete(
   "/:id",
-  authGuard("admin"),
+  authGuard("admin", "provider"),
   providerController.deleteMeal.bind(providerController),
 );
 
