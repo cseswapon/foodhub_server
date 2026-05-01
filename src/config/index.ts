@@ -5,6 +5,7 @@ dotenv.config();
 export const config = {
   PORT: process.env.PORT,
   DATABASE_URL: process.env.DATABASE_URL,
+  REDIS_URL: process.env.REDIS_URL,
   BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
 
   BACKEND_URL: process.env.BACKEND_URL,

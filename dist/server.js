@@ -23,6 +23,7 @@ dotenv.config();
 var config = {
   PORT: process.env.PORT,
   DATABASE_URL: process.env.DATABASE_URL,
+  REDIS_URL: process.env.REDIS_URL,
   BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
   BACKEND_URL: process.env.BACKEND_URL,
   APP_URL: process.env.APP_URL,
@@ -768,11 +769,117 @@ var CategoriesService = class {
 
 // src/module/categories/categories.controller.ts
 import httpStatus3 from "http-status-codes";
+
+// src/lib/redis.ts
+import Redis from "ioredis";
+var redisUrl = config.REDIS_URL;
+var redisClient = redisUrl ? new Redis(redisUrl, {
+  lazyConnect: true,
+  maxRetriesPerRequest: 1,
+  enableReadyCheck: true,
+  tls: redisUrl.startsWith("rediss://") ? {} : void 0
+}) : null;
+if (redisClient) {
+  redisClient.on("error", (error) => {
+    console.error("Redis error:", error);
+  });
+}
+var getConnectedClient = async () => {
+  if (!redisClient) {
+    return null;
+  }
+  if (redisClient.status === "wait") {
+    await redisClient.connect();
+  }
+  return redisClient;
+};
+var cacheGet = async (key) => {
+  try {
+    const client = await getConnectedClient();
+    if (!client) {
+      return null;
+    }
+    const value = await client.get(key);
+    if (!value) {
+      return null;
+    }
+    return JSON.parse(value);
+  } catch (error) {
+    console.error("cacheGet error:", error);
+    return null;
+  }
+};
+var cacheSet = async (key, value, ttlSeconds) => {
+  try {
+    const client = await getConnectedClient();
+    if (!client) {
+      return;
+    }
+    await client.set(key, JSON.stringify(value), "EX", ttlSeconds);
+  } catch (error) {
+    console.error("cacheSet error:", error);
+  }
+};
+var cacheDelete = async (key) => {
+  try {
+    const client = await getConnectedClient();
+    if (!client) {
+      return;
+    }
+    await client.del(key);
+  } catch (error) {
+    console.error("cacheDelete error:", error);
+  }
+};
+var cacheDeleteByPattern = async (pattern) => {
+  try {
+    const client = await getConnectedClient();
+    if (!client) {
+      return;
+    }
+    let cursor = "0";
+    do {
+      const [nextCursor, keys] = await client.scan(
+        cursor,
+        "MATCH",
+        pattern,
+        "COUNT",
+        "100"
+      );
+      cursor = nextCursor;
+      if (keys.length > 0) {
+        await client.del(...keys);
+      }
+    } while (cursor !== "0");
+  } catch (error) {
+    console.error("cacheDeleteByPattern error:", error);
+  }
+};
+
+// src/module/categories/categories.controller.ts
+var CATEGORIES_LIST_TTL = 300;
+var CATEGORIES_SINGLE_TTL = 300;
 var CategoriesController = class {
   categoriesService = new CategoriesService();
   getAllCategories = catchAsync(
     async (req, res, next) => {
+      const cacheKey = `categories:list:${req.originalUrl}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus3.OK,
+          success: true,
+          message: "Retrieve all categories",
+          data: cached.categories,
+          meta: cached.meta
+        });
+      }
       const result = await this.categoriesService.getCategories(req);
+      await cacheSet(
+        cacheKey,
+        { categories: result.categories, meta: result.meta },
+        CATEGORIES_LIST_TTL
+      );
       sendResponse(res, {
         statusCode: httpStatus3.OK,
         success: true,
@@ -785,7 +892,18 @@ var CategoriesController = class {
   getSingleCategory = catchAsync(
     async (req, res, next) => {
       const { id } = req.params;
+      const cacheKey = `categories:single:${id}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus3.OK,
+          success: true,
+          message: "Retrieve single category",
+          data: cached
+        });
+      }
       const result = await this.categoriesService.getIdCategories(id);
+      await cacheSet(cacheKey, result, CATEGORIES_SINGLE_TTL);
       sendResponse(res, {
         statusCode: httpStatus3.OK,
         success: true,
@@ -797,6 +915,8 @@ var CategoriesController = class {
   createCategory = catchAsync(
     async (req, res, next) => {
       const result = await this.categoriesService.createCategories(req.body);
+      await cacheDeleteByPattern("categories:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus3.CREATED,
         success: true,
@@ -812,6 +932,8 @@ var CategoriesController = class {
         id,
         req.body
       );
+      await cacheDeleteByPattern("categories:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus3.OK,
         success: true,
@@ -826,6 +948,8 @@ var CategoriesController = class {
       const result = await this.categoriesService.deleteCategories(
         id
       );
+      await cacheDeleteByPattern("categories:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus3.OK,
         success: true,
@@ -1004,11 +1128,29 @@ var ProviderService = class {
 };
 
 // src/module/provider/provider.controller.ts
+var PROVIDER_LIST_TTL = 180;
+var PROVIDER_SINGLE_TTL = 180;
 var ProvidersController = class {
   providerService = new ProviderService();
   getAllProviders = catchAsync(
     async (req, res, next) => {
+      const cacheKey = `providers:list:${req.originalUrl}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus4.OK,
+          success: true,
+          message: "Retrieve all providers",
+          data: cached.providers,
+          meta: cached.meta
+        });
+      }
       const result = await this.providerService.getProvider(req);
+      await cacheSet(
+        cacheKey,
+        { providers: result.providers, meta: result.meta },
+        PROVIDER_LIST_TTL
+      );
       sendResponse(res, {
         statusCode: httpStatus4.OK,
         success: true,
@@ -1033,7 +1175,23 @@ var ProvidersController = class {
     ); */
   getAllProvidersme = catchAsync(
     async (req, res, next) => {
+      const cacheKey = `providers:me:${req.user.id}:${req.originalUrl}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus4.OK,
+          success: true,
+          message: "Retrieve my all providers",
+          data: cached.providers,
+          meta: cached.meta
+        });
+      }
       const result = await this.providerService.getProviderme(req);
+      await cacheSet(
+        cacheKey,
+        { providers: result.providers, meta: result.meta },
+        PROVIDER_LIST_TTL
+      );
       sendResponse(res, {
         statusCode: httpStatus4.OK,
         success: true,
@@ -1045,9 +1203,20 @@ var ProvidersController = class {
   );
   getSingleProvider = catchAsync(
     async (req, res, next) => {
+      const cacheKey = `providers:single:${req.params.id}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus4.OK,
+          success: true,
+          message: "Retrieve single provider",
+          data: cached
+        });
+      }
       const result = await this.providerService.getIdProvider(
         req.params.id
       );
+      await cacheSet(cacheKey, result, PROVIDER_SINGLE_TTL);
       sendResponse(res, {
         statusCode: httpStatus4.OK,
         success: true,
@@ -1063,6 +1232,8 @@ var ProvidersController = class {
         req.body,
         userId
       );
+      await cacheDeleteByPattern("providers:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus4.CREATED,
         success: true,
@@ -1078,6 +1249,8 @@ var ProvidersController = class {
         req.body,
         req.query.name
       );
+      await cacheDeleteByPattern("providers:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus4.OK,
         success: true,
@@ -1090,6 +1263,8 @@ var ProvidersController = class {
     async (req, res, next) => {
       const { id } = req.params;
       const result = await this.providerService.deleteProvider(id);
+      await cacheDeleteByPattern("providers:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus4.OK,
         success: true,
@@ -1327,11 +1502,29 @@ var MealService = class {
 };
 
 // src/module/meal/meal.controller.ts
+var MEAL_LIST_TTL = 180;
+var MEAL_SINGLE_TTL = 180;
 var MealsController = class {
   providerService = new MealService();
   getAllMeals = catchAsync(
     async (req, res, next) => {
+      const cacheKey = `meals:list:${req.originalUrl}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus5.OK,
+          success: true,
+          message: "Retrieve all meals",
+          data: cached.meals,
+          meta: cached.meta
+        });
+      }
       const result = await this.providerService.getMeal(req);
+      await cacheSet(
+        cacheKey,
+        { meals: result.meals, meta: result.meta },
+        MEAL_LIST_TTL
+      );
       sendResponse(res, {
         statusCode: httpStatus5.OK,
         success: true,
@@ -1343,7 +1536,23 @@ var MealsController = class {
   );
   getAllMealsme = catchAsync(
     async (req, res, next) => {
+      const cacheKey = `meals:me:${req.user.id}:${req.originalUrl}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus5.OK,
+          success: true,
+          message: "Retrieve all meals",
+          data: cached.meals,
+          meta: cached.meta
+        });
+      }
       const result = await this.providerService.getMealme(req);
+      await cacheSet(
+        cacheKey,
+        { meals: result.meals, meta: result.meta },
+        MEAL_LIST_TTL
+      );
       sendResponse(res, {
         statusCode: httpStatus5.OK,
         success: true,
@@ -1356,7 +1565,18 @@ var MealsController = class {
   getSingleMeal = catchAsync(
     async (req, res, next) => {
       const { id } = req.params;
+      const cacheKey = `meals:single:public:${id}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus5.OK,
+          success: true,
+          message: "Retrieve single meal",
+          data: cached
+        });
+      }
       const result = await this.providerService.getIdMeal(id);
+      await cacheSet(cacheKey, result, MEAL_SINGLE_TTL);
       sendResponse(res, {
         statusCode: httpStatus5.OK,
         success: true,
@@ -1368,9 +1588,20 @@ var MealsController = class {
   getSingleMealProvider = catchAsync(
     async (req, res, next) => {
       const { id } = req.params;
+      const cacheKey = `meals:single:provider:${id}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus5.OK,
+          success: true,
+          message: "Retrieve single meal",
+          data: cached
+        });
+      }
       const result = await this.providerService.getSingleMealProvider(
         id
       );
+      await cacheSet(cacheKey, result, MEAL_SINGLE_TTL);
       sendResponse(res, {
         statusCode: httpStatus5.OK,
         success: true,
@@ -1382,6 +1613,9 @@ var MealsController = class {
   createMeal = catchAsync(
     async (req, res, next) => {
       const result = await this.providerService.createMeal(req.body);
+      await cacheDeleteByPattern("meals:*");
+      await cacheDeleteByPattern("providers:single:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus5.CREATED,
         success: true,
@@ -1397,6 +1631,9 @@ var MealsController = class {
         id,
         req.body
       );
+      await cacheDeleteByPattern("meals:*");
+      await cacheDeleteByPattern("providers:single:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus5.OK,
         success: true,
@@ -1409,6 +1646,9 @@ var MealsController = class {
     async (req, res, next) => {
       const { id } = req.params;
       const result = await this.providerService.deleteMeal(id);
+      await cacheDeleteByPattern("meals:*");
+      await cacheDeleteByPattern("providers:single:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus5.OK,
         success: true,
@@ -1916,11 +2156,29 @@ var ReviewService = class {
 };
 
 // src/module/review/review.controller.ts
+var REVIEW_LIST_TTL = 180;
+var REVIEW_SINGLE_TTL = 180;
 var ReviewsController = class {
   reviewService = new ReviewService();
   getAllReviews = catchAsync(
     async (req, res, next) => {
+      const cacheKey = `reviews:list:${req.user.role}:${req.user.id}:${req.originalUrl}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus7.OK,
+          success: true,
+          message: "Retrieve all reviews",
+          data: cached.reviews,
+          meta: cached.meta
+        });
+      }
       const result = await this.reviewService.getReview(req);
+      await cacheSet(
+        cacheKey,
+        { reviews: result.reviews, meta: result.meta },
+        REVIEW_LIST_TTL
+      );
       sendResponse(res, {
         statusCode: httpStatus7.OK,
         success: true,
@@ -1932,11 +2190,22 @@ var ReviewsController = class {
   );
   getSingleReview = catchAsync(async (req, res) => {
     const { id } = req.params;
+    const cacheKey = `reviews:single:${id}:${req.user.role}:${req.user.id}`;
+    const cached = await cacheGet(cacheKey);
+    if (cached) {
+      return sendResponse(res, {
+        statusCode: httpStatus7.OK,
+        success: true,
+        message: "Retrieve single review",
+        data: cached
+      });
+    }
     const result = await this.reviewService.getIdReview(
       id,
       req.user.id,
       req.user.role
     );
+    await cacheSet(cacheKey, result, REVIEW_SINGLE_TTL);
     sendResponse(res, {
       statusCode: httpStatus7.OK,
       success: true,
@@ -1957,6 +2226,9 @@ var ReviewsController = class {
         rating,
         comment
       );
+      await cacheDeleteByPattern("reviews:*");
+      await cacheDeleteByPattern("meals:single:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus7.CREATED,
         success: true,
@@ -1974,6 +2246,9 @@ var ReviewsController = class {
         req.user.role,
         req.body
       );
+      await cacheDeleteByPattern("reviews:*");
+      await cacheDeleteByPattern("meals:single:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus7.OK,
         success: true,
@@ -1986,6 +2261,9 @@ var ReviewsController = class {
     async (req, res, next) => {
       const { id } = req.params;
       const result = await this.reviewService.deleteReview(id);
+      await cacheDeleteByPattern("reviews:*");
+      await cacheDeleteByPattern("meals:single:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus7.OK,
         success: true,
@@ -2083,10 +2361,22 @@ var DashboardService = class {
 
 // src/module/dashboard/dashboard.controller.ts
 import httpStatus8 from "http-status-codes";
+var DASHBOARD_TTL = 120;
 var DashboardController = class {
   dashboardService = new DashboardService();
   getStatic = catchAsync(async (req, res) => {
+    const cacheKey = `dashboard:${req.user.role}:${req.user.id}:${req.originalUrl}`;
+    const cached = await cacheGet(cacheKey);
+    if (cached) {
+      return sendResponse(res, {
+        statusCode: httpStatus8.OK,
+        success: true,
+        message: `Retrieve ${req.user.role} Statistics`,
+        data: cached
+      });
+    }
     const result = await this.dashboardService.getStatic(req);
+    await cacheSet(cacheKey, result, DASHBOARD_TTL);
     sendResponse(res, {
       statusCode: httpStatus8.OK,
       success: true,
@@ -2306,130 +2596,93 @@ var IndexingService = class {
   }
 };
 
-// src/module/embedding/llm.service.ts
-var LLMService = class {
-  apiKey;
-  apiUrl = "https://openrouter.ai/api/v1";
-  model;
-  constructor() {
-    this.apiKey = config.OPEN_ROUTER.OPEN_ROUTER_API_KEY || "";
-    this.model = config.OPEN_ROUTER.OPEN_ROUTER_TEXT_MODEL || "nvidia/nemotron-3-super-120b-a12b:free";
-    if (!this.apiKey) {
-      throw new Error("OpenRouter api key is missing...");
-    }
-  }
-  async generateResponse(systemPrompt, userQuery, asJson = false) {
-    try {
-      const bodyPayload = {
-        model: this.model,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userQuery }
-        ],
-        temperature: 0.1,
-        max_tokens: 1500
-      };
-      if (asJson && (this.model.includes("gpt") || this.model.includes("openai"))) {
-        bodyPayload.response_format = { type: "json_object" };
-      }
-      const response = await fetch(`${this.apiUrl}/chat/completions`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://uranto.com",
-          "X-Title": "Uranto E-Commerce"
-        },
-        body: JSON.stringify(bodyPayload)
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          `OpenRouter API error: ${response.status} - ${errorData.error?.message || "unknown error"}`
-        );
-      }
-      const data = await response.json();
-      return data.choices[0].message.content;
-    } catch (error) {
-      console.error("Error generating LLM response:", error);
-      throw error;
-    }
-  }
-};
-
 // src/module/embedding/embedding.controller.ts
-var toPositiveNumber = (value, fallback, maximum) => {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
-    return fallback;
-  }
-  return Math.min(parsed, maximum);
-};
-var toThreshold = (value, fallback = 0.4) => {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed < 0 || parsed > 1) {
-    return fallback;
-  }
-  return parsed;
-};
 var EmbeddingController = class _EmbeddingController {
-  static embeddingService = new EmbeddingService();
   static indexingService = new IndexingService();
-  static llmService = new LLMService();
+  static embeddingService = new EmbeddingService();
+  static statsCacheKey = "embedding:stats";
+  static statsTtlSeconds = 300;
+  static queryTtlSeconds = 120;
   static getStats = catchAsync(async (_req, res) => {
-    const result = await _EmbeddingController.indexingService.getStats();
+    const cachedStats = await cacheGet(_EmbeddingController.statsCacheKey);
+    if (cachedStats) {
+      return sendResponse(res, {
+        success: true,
+        statusCode: httpStatus9.OK,
+        message: "Embedding stats fetched successfully",
+        data: cachedStats
+      });
+    }
+    const stats = await _EmbeddingController.indexingService.getStats();
+    await cacheSet(
+      _EmbeddingController.statsCacheKey,
+      stats,
+      _EmbeddingController.statsTtlSeconds
+    );
     sendResponse(res, {
-      statusCode: httpStatus9.OK,
       success: true,
-      message: "Embedding stats retrieved successfully",
-      data: result
+      statusCode: httpStatus9.OK,
+      message: "Embedding stats fetched successfully",
+      data: stats
     });
   });
   static ingestProducts = catchAsync(async (_req, res) => {
     const result = await _EmbeddingController.indexingService.indexProductsData();
+    await cacheDelete(_EmbeddingController.statsCacheKey);
+    await cacheDeleteByPattern("embedding:query:*");
     sendResponse(res, {
-      statusCode: httpStatus9.OK,
       success: true,
+      statusCode: httpStatus9.OK,
       message: result.message,
       data: result
     });
   });
   static queryRag = catchAsync(async (req, res) => {
-    const { query, limit, threshold, sourceType } = req.body;
-    if (!query?.trim()) {
-      throw new Error("Query is required");
+    const {
+      query,
+      limit = 5,
+      threshold = 0.4,
+      sourceType = "MEAL"
+    } = req.body;
+    if (!query || !query.trim()) {
+      return sendResponse(res, {
+        success: false,
+        statusCode: httpStatus9.BAD_REQUEST,
+        message: "query is required",
+        data: null
+      });
+    }
+    const normalizedQuery = query.trim().toLowerCase();
+    const parsedLimit = Number(limit);
+    const parsedThreshold = Number(threshold);
+    const cacheKey = `embedding:query:${sourceType}:${parsedLimit}:${parsedThreshold}:${normalizedQuery}`;
+    const cachedMatches = await cacheGet(cacheKey);
+    if (cachedMatches) {
+      return sendResponse(res, {
+        success: true,
+        statusCode: httpStatus9.OK,
+        message: "Cached query completed successfully",
+        data: {
+          query,
+          matches: cachedMatches
+        }
+      });
     }
     const queryEmbedding = await _EmbeddingController.embeddingService.generateEmbedding(query);
-    const results = await _EmbeddingController.indexingService.similaritySearch(
+    const matches = await _EmbeddingController.indexingService.similaritySearch(
       queryEmbedding,
-      toPositiveNumber(limit, 5, 10),
-      toThreshold(threshold),
-      sourceType?.trim() || "MEAL"
+      parsedLimit,
+      parsedThreshold,
+      sourceType
     );
-    const context = results.map(
-      (item, index) => `${index + 1}. ${item.sourceLabel ?? item.sourceId}
-${item.content}`
-    ).join("\n\n");
-    const systemPrompt = [
-      "You are FoodHub's helpful food search assistant.",
-      "Answer only from the provided context.",
-      "If the context is empty or not enough, say that no matching meal was found.",
-      "Keep the answer concise and practical."
-    ].join(" ");
-    const answer = await _EmbeddingController.llmService.generateResponse(
-      systemPrompt,
-      `User query: ${query}
-
-Context:
-${context || "No context found."}`
-    );
+    await cacheSet(cacheKey, matches, _EmbeddingController.queryTtlSeconds);
     sendResponse(res, {
-      statusCode: httpStatus9.OK,
       success: true,
-      message: "RAG query completed successfully",
+      statusCode: httpStatus9.OK,
+      message: "Query completed successfully",
       data: {
-        answer,
-        matches: results
+        query,
+        matches
       }
     });
   });
@@ -2437,11 +2690,7 @@ ${context || "No context found."}`
 
 // src/module/embedding/embedding.route.ts
 var router8 = Router8();
-router8.get(
-  "/stats",
-  authGuard("admin"),
-  EmbeddingController.getStats
-);
+router8.get("/stats", authGuard("admin"), EmbeddingController.getStats);
 router8.post(
   "/ingest-product",
   authGuard("admin"),
