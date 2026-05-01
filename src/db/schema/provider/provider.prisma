@@ -17,5 +17,7 @@ model Provider {
     // meals  Meal[]
     // orders Order[]
 
+    @@index([restaurant_name], name: "idx_provider_restaurant_name")
+    @@index([user_id], name: "idx_provider_user_id")
     @@map("providers")
 }

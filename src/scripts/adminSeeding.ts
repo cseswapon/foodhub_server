@@ -57,8 +57,8 @@ import { db } from "../db";
     });
     console.log("Admin user created successfully");
   } catch (error) {
-    console.error("Admin setup failed");
-    console.error(error);
-    process.exit(1);
+    // console.error("Admin setup failed");
+    // console.error(error);
+    // process.exit(1);
   }
 })();

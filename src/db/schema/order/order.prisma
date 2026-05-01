@@ -3,9 +3,6 @@ model Order {
     user_id String
     user    User   @relation(fields: [user_id], references: [id])
 
-    // provider_id String
-    // provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
-
     total_price      Decimal       @db.Decimal(10, 2)
     delivery_address String
     payment_method   PaymentMethod
@@ -16,9 +13,8 @@ model Order {
     created_at DateTime     @default(now())
     updated_at DateTime     @updatedAt()
     orderItems Order_Item[]
-    // provider   Provider?    @relation(fields: [providerId], references: [id])
-    // providerId String?
 
-    @@index([status])
+    @@index([status], name: "idx_order_status")
+    @@index([user_id], name: "idx_order_user_id")
     @@map("orders")
 }

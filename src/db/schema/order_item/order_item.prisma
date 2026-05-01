@@ -9,5 +9,10 @@ model Order_Item {
     quantity Int
     price    Decimal @db.Decimal(10, 2)
 
+    created_at DateTime? @default(now())
+    updated_at DateTime? @updatedAt
+
+    @@index([orderId], name: "idx_order_item_order_id")
+    @@index([meal_id], name: "idx_order_item_meal_id")
     @@map("order_items")
 }

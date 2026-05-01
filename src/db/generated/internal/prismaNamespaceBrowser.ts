@@ -59,6 +59,7 @@ export const ModelName = {
   Order: 'Order',
   Order_Item: 'Order_Item',
   Provider: 'Provider',
+  DocumentEmbedding: 'DocumentEmbedding',
   Review: 'Review',
   User: 'User'
 } as const
@@ -170,7 +171,9 @@ export const Order_ItemScalarFieldEnum = {
   orderId: 'orderId',
   meal_id: 'meal_id',
   quantity: 'quantity',
-  price: 'price'
+  price: 'price',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type Order_ItemScalarFieldEnum = (typeof Order_ItemScalarFieldEnum)[keyof typeof Order_ItemScalarFieldEnum]
@@ -189,6 +192,23 @@ export const ProviderScalarFieldEnum = {
 } as const
 
 export type ProviderScalarFieldEnum = (typeof ProviderScalarFieldEnum)[keyof typeof ProviderScalarFieldEnum]
+
+
+export const DocumentEmbeddingScalarFieldEnum = {
+  id: 'id',
+  chunkKey: 'chunkKey',
+  sourceType: 'sourceType',
+  sourceId: 'sourceId',
+  sourceLabel: 'sourceLabel',
+  content: 'content',
+  metaData: 'metaData',
+  isDelete: 'isDelete',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DocumentEmbeddingScalarFieldEnum = (typeof DocumentEmbeddingScalarFieldEnum)[keyof typeof DocumentEmbeddingScalarFieldEnum]
 
 
 export const ReviewScalarFieldEnum = {
@@ -230,6 +250,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -244,4 +272,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

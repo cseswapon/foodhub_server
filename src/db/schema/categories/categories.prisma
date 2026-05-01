@@ -7,5 +7,6 @@ model Categories {
 
     meals Meal[]
 
+    @@index([name], name: "idx_category_name")
     @@map("categories")
 }

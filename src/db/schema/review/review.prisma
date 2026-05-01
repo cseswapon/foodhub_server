@@ -16,5 +16,7 @@ model Review {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
+    @@index([meal_id], name: "idx_review_meal_id")
+    @@index([user_id], name: "idx_review_user_id")
     @@map("reviews")
 }

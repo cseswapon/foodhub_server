@@ -1,9 +1,6 @@
 model Meal {
     id String @id @default(uuid())
 
-    // provider_id String
-    // provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
-
     user_id String
     user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
@@ -22,8 +19,8 @@ model Meal {
     orderItems Order_Item[]
     reviews    Review[]
 
-    @@index([dietary_type])
-    @@index([name])
-    @@index([price])
+    @@index([dietary_type], name: "idx_meal_dietary_type")
+    @@index([name], name: "idx_meal_name")
+    @@index([price], name: "idx_meal_price")
     @@map("meals")
 }

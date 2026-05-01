@@ -5,12 +5,12 @@
   "main": "./server/server.ts",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "npm run seeding:admin && tsx watch src/server.ts",
     "build": "prisma generate && tsup",
     "start": "node dist/server.js",
     "postinstall": "prisma generate",
     "seeding:admin": "tsx ./src/scripts/adminSeeding.ts",
-    "vercel:deploy":"vercel --prod",
+    "vercel:deploy": "vercel --prod",
     "migrate": "npx prisma migrate dev",
     "generate": "npx prisma generate",
     "deploy": "npx prisma migrate deploy",
@@ -33,7 +33,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.0.10",
+    "@types/node": "^25.6.0",
     "@types/pg": "^8.16.0",
     "prisma": "^7.3.0",
     "tsup": "^8.5.1",

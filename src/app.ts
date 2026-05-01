@@ -9,7 +9,7 @@ import { UserServices } from "./module/user/user.service";
 import { sendResponse } from "./utils/sendResponse";
 import { UserController } from "./module/user/user.controller";
 const userService = new UserServices();
-const userController = new UserController()
+const userController = new UserController();
 
 const app: Application = express();
 

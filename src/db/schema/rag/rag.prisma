@@ -1,0 +1,22 @@
+model DocumentEmbedding {
+    id          String  @id @default(uuid())
+    chunkKey    String
+    sourceType  String
+    sourceId    String
+    sourceLabel String?
+    content     String
+    metaData    Json?
+
+    isDelete  Boolean   @default(false)
+    deletedAt DateTime?
+
+    embedding Unsupported("vector(2048)") // SQL QUERY: CREATE EXTENSION vector; 
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([isDelete], name: "idx_document_embedding_isDelete")
+    @@index([sourceType], name: "idx_document_embeddings_sourceType")
+    @@index([sourceId], name: "idx_document_embeddings_sourceId")
+    @@map("document_embeddings")
+}

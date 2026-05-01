@@ -18,5 +18,8 @@ model User {
   meals         Meal[]
 
   @@unique([email])
+  @@index([role], name: "idx_user_role")
+  @@index([status], name: "idx_user_status")
+  @@index([email], name: "idx_user_email")
   @@map("users")
 }

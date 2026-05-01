@@ -1,3 +1,6 @@
+-- CreateExtension
+CREATE EXTENSION IF NOT EXISTS "vector";
+
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('customer', 'provider', 'admin');
 
@@ -71,7 +74,7 @@ CREATE TABLE "categories" (
 -- CreateTable
 CREATE TABLE "meals" (
     "id" TEXT NOT NULL,
-    "provider_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
     "category_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
@@ -88,7 +91,6 @@ CREATE TABLE "meals" (
 CREATE TABLE "orders" (
     "id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
-    "provider_id" TEXT NOT NULL,
     "total_price" DECIMAL(10,2) NOT NULL,
     "delivery_address" TEXT NOT NULL,
     "payment_method" "PaymentMethod" NOT NULL,
@@ -107,6 +109,8 @@ CREATE TABLE "order_items" (
     "meal_id" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "price" DECIMAL(10,2) NOT NULL,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
 
     CONSTRAINT "order_items_pkey" PRIMARY KEY ("id")
 );
@@ -124,6 +128,24 @@ CREATE TABLE "providers" (
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "providers_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "document_embedding" (
+    "id" TEXT NOT NULL,
+    "chunkKey" TEXT NOT NULL,
+    "sourceType" TEXT NOT NULL,
+    "sourceId" TEXT NOT NULL,
+    "sourceLabel" TEXT,
+    "content" TEXT NOT NULL,
+    "metaData" JSONB,
+    "isDelete" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "embedding" vector(2048) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "document_embedding_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -173,19 +195,61 @@ CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
 CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
 
 -- CreateIndex
-CREATE INDEX "meals_dietary_type_idx" ON "meals"("dietary_type");
+CREATE INDEX "idx_category_name" ON "categories"("name");
 
 -- CreateIndex
-CREATE INDEX "meals_name_idx" ON "meals"("name");
+CREATE INDEX "idx_meal_dietary_type" ON "meals"("dietary_type");
 
 -- CreateIndex
-CREATE INDEX "meals_price_idx" ON "meals"("price");
+CREATE INDEX "idx_meal_name" ON "meals"("name");
 
 -- CreateIndex
-CREATE INDEX "orders_status_idx" ON "orders"("status");
+CREATE INDEX "idx_meal_price" ON "meals"("price");
+
+-- CreateIndex
+CREATE INDEX "idx_order_status" ON "orders"("status");
+
+-- CreateIndex
+CREATE INDEX "idx_order_user_id" ON "orders"("user_id");
+
+-- CreateIndex
+CREATE INDEX "idx_order_item_order_id" ON "order_items"("orderId");
+
+-- CreateIndex
+CREATE INDEX "idx_order_item_meal_id" ON "order_items"("meal_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "providers_restaurant_name_key" ON "providers"("restaurant_name");
+
+-- CreateIndex
+CREATE INDEX "idx_provider_restaurant_name" ON "providers"("restaurant_name");
+
+-- CreateIndex
+CREATE INDEX "idx_provider_user_id" ON "providers"("user_id");
+
+-- CreateIndex
+CREATE INDEX "idx_document_embedding_isDelete" ON "document_embedding"("isDelete");
+
+-- CreateIndex
+CREATE INDEX "idx_document_embeddings_sourceType" ON "document_embedding"("sourceType");
+
+-- CreateIndex
+CREATE INDEX "idx_document_embeddings_sourceId" ON "document_embedding"("sourceId");
+
+-- CreateIndex
+CREATE INDEX "idx_review_meal_id" ON "reviews"("meal_id");
+
+-- CreateIndex
+CREATE INDEX "idx_review_user_id" ON "reviews"("user_id");
+
+-- CreateIndex
+CREATE INDEX "idx_user_role" ON "users"("role");
+
+-- CreateIndex
+CREATE INDEX "idx_user_status" ON "users"("status");
+
+-- CreateIndex
+CREATE INDEX "idx_user_email" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
@@ -197,16 +261,13 @@ ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "meals" ADD CONSTRAINT "meals_provider_id_fkey" FOREIGN KEY ("provider_id") REFERENCES "providers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "meals" ADD CONSTRAINT "meals_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "meals" ADD CONSTRAINT "meals_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_provider_id_fkey" FOREIGN KEY ("provider_id") REFERENCES "providers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "order_items" ADD CONSTRAINT "order_items_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

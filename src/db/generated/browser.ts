@@ -58,6 +58,11 @@ export type Order_Item = Prisma.Order_ItemModel
  */
 export type Provider = Prisma.ProviderModel
 /**
+ * Model DocumentEmbedding
+ * 
+ */
+export type DocumentEmbedding = Prisma.DocumentEmbeddingModel
+/**
  * Model Review
  * 
  */
