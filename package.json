@@ -5,7 +5,7 @@
   "main": "./server/server.ts",
   "type": "module",
   "scripts": {
-    "dev": "npm run seeding:admin && tsx watch src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "prisma generate && tsup",
     "start": "node dist/server.js",
     "postinstall": "prisma generate",

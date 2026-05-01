@@ -1,10 +1,11 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { db } from "../db";
-import { config } from "dotenv";
+import { config } from "../config";
 
-config();
 export const auth = betterAuth({
+  secret: config.BETTER_AUTH_SECRET,
+
   rateLimit: {
     enabled: true,
     window: 10,
@@ -18,14 +19,16 @@ export const auth = betterAuth({
   trustedOrigins: [
     "http://localhost:3000",
     "https://foodhub-client-eight.vercel.app",
-  ],
+    config.APP_URL,
+    config.BACKEND_URL,
+  ].filter((origin): origin is string => Boolean(origin)),
 
   /* advanced: {
     crossSubDomainCookies: {
       enabled: true,
     },
   }, */
-  
+
   /* hooks: {
     after: async (ctx: any) => { 
       const setCookie = ctx.response.headers.get("set-cookie");
