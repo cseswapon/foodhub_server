@@ -10,6 +10,12 @@ export const config = {
   BACKEND_URL: process.env.BACKEND_URL,
   APP_URL: process.env.APP_URL,
 
+  OPEN_ROUTER: {
+    OPEN_ROUTER_API_KEY: process.env.OPEN_ROUTER_API_KEY,
+    OPEN_ROUTER_EMBEDDING_MODEL: process.env.OPEN_ROUTER_EMBEDDING_MODEL,
+    OPEN_ROUTER_TEXT_MODEL: process.env.OPEN_ROUTER_TEXT_MODEL,
+  },
+
   ADMIN_NAME: process.env.ADMIN_NAME,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,

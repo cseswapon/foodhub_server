@@ -1,6 +1,12 @@
+var __defProp = Object.defineProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+
 // src/app.ts
 import express9 from "express";
-import httpStatus10 from "http-status-codes";
+import httpStatus11 from "http-status-codes";
 import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 
@@ -20,6 +26,11 @@ var config = {
   BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
   BACKEND_URL: process.env.BACKEND_URL,
   APP_URL: process.env.APP_URL,
+  OPEN_ROUTER: {
+    OPEN_ROUTER_API_KEY: process.env.OPEN_ROUTER_API_KEY,
+    OPEN_ROUTER_EMBEDDING_MODEL: process.env.OPEN_ROUTER_EMBEDDING_MODEL,
+    OPEN_ROUTER_TEXT_MODEL: process.env.OPEN_ROUTER_TEXT_MODEL
+  },
   ADMIN_NAME: process.env.ADMIN_NAME,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
@@ -48,8 +59,8 @@ var config2 = {
 };
 config2.runtimeDataModel = JSON.parse('{"models":{"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"},"Categories":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"created_at","kind":"scalar","type":"DateTime"},{"name":"updated_at","kind":"scalar","type":"DateTime"},{"name":"meals","kind":"object","type":"Meal","relationName":"CategoriesToMeal"}],"dbName":"categories"},"Meal":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"user_id","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"MealToUser"},{"name":"category_id","kind":"scalar","type":"String"},{"name":"category","kind":"object","type":"Categories","relationName":"CategoriesToMeal"},{"name":"name","kind":"scalar","type":"String"},{"name":"description","kind":"scalar","type":"String"},{"name":"price","kind":"scalar","type":"Decimal"},{"name":"dietary_type","kind":"enum","type":"DietaryType"},{"name":"is_available","kind":"scalar","type":"Boolean"},{"name":"created_at","kind":"scalar","type":"DateTime"},{"name":"updated_at","kind":"scalar","type":"DateTime"},{"name":"orderItems","kind":"object","type":"Order_Item","relationName":"MealToOrder_Item"},{"name":"reviews","kind":"object","type":"Review","relationName":"MealToReview"}],"dbName":"meals"},"Order":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"user_id","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"OrderToUser"},{"name":"total_price","kind":"scalar","type":"Decimal"},{"name":"delivery_address","kind":"scalar","type":"String"},{"name":"payment_method","kind":"enum","type":"PaymentMethod"},{"name":"status","kind":"enum","type":"OrderStatus"},{"name":"cancelled_by","kind":"scalar","type":"String"},{"name":"created_at","kind":"scalar","type":"DateTime"},{"name":"updated_at","kind":"scalar","type":"DateTime"},{"name":"orderItems","kind":"object","type":"Order_Item","relationName":"OrderToOrder_Item"}],"dbName":"orders"},"Order_Item":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"order","kind":"object","type":"Order","relationName":"OrderToOrder_Item"},{"name":"meal_id","kind":"scalar","type":"String"},{"name":"meal","kind":"object","type":"Meal","relationName":"MealToOrder_Item"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"price","kind":"scalar","type":"Decimal"},{"name":"created_at","kind":"scalar","type":"DateTime"},{"name":"updated_at","kind":"scalar","type":"DateTime"}],"dbName":"order_items"},"Provider":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"user_id","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"ProviderToUser"},{"name":"restaurant_name","kind":"scalar","type":"String"},{"name":"description","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"is_open","kind":"scalar","type":"Boolean"},{"name":"fb_link","kind":"scalar","type":"String"},{"name":"created_at","kind":"scalar","type":"DateTime"},{"name":"updated_at","kind":"scalar","type":"DateTime"}],"dbName":"providers"},"DocumentEmbedding":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"chunkKey","kind":"scalar","type":"String"},{"name":"sourceType","kind":"scalar","type":"String"},{"name":"sourceId","kind":"scalar","type":"String"},{"name":"sourceLabel","kind":"scalar","type":"String"},{"name":"content","kind":"scalar","type":"String"},{"name":"metaData","kind":"scalar","type":"Json"},{"name":"isDelete","kind":"scalar","type":"Boolean"},{"name":"deletedAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"document_embeddings"},"Review":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"meal_id","kind":"scalar","type":"String"},{"name":"meal","kind":"object","type":"Meal","relationName":"MealToReview"},{"name":"rating","kind":"scalar","type":"Decimal"},{"name":"comment","kind":"scalar","type":"String"},{"name":"user_id","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"ReviewToUser"},{"name":"is_visible","kind":"scalar","type":"Boolean"},{"name":"created_at","kind":"scalar","type":"DateTime"},{"name":"updated_at","kind":"scalar","type":"DateTime"}],"dbName":"reviews"},"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"role","kind":"enum","type":"UserRole"},{"name":"phone","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"status","kind":"enum","type":"UserStatus"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"},{"name":"provider","kind":"object","type":"Provider","relationName":"ProviderToUser"},{"name":"orders","kind":"object","type":"Order","relationName":"OrderToUser"},{"name":"reviews","kind":"object","type":"Review","relationName":"ReviewToUser"},{"name":"meals","kind":"object","type":"Meal","relationName":"MealToUser"}],"dbName":"users"}},"enums":{},"types":{}}');
 async function decodeBase64AsWasm(wasmBase64) {
-  const { Buffer } = await import("buffer");
-  const wasmArray = Buffer.from(wasmBase64, "base64");
+  const { Buffer: Buffer2 } = await import("buffer");
+  const wasmArray = Buffer2.from(wasmBase64, "base64");
   return new WebAssembly.Module(wasmArray);
 }
 config2.compilerWasm = {
@@ -65,12 +76,82 @@ function getPrismaClientClass() {
 }
 
 // src/db/generated/internal/prismaNamespace.ts
+var prismaNamespace_exports = {};
+__export(prismaNamespace_exports, {
+  AccountScalarFieldEnum: () => AccountScalarFieldEnum,
+  AnyNull: () => AnyNull2,
+  CategoriesScalarFieldEnum: () => CategoriesScalarFieldEnum,
+  DbNull: () => DbNull2,
+  Decimal: () => Decimal2,
+  DocumentEmbeddingScalarFieldEnum: () => DocumentEmbeddingScalarFieldEnum,
+  JsonNull: () => JsonNull2,
+  JsonNullValueFilter: () => JsonNullValueFilter,
+  MealScalarFieldEnum: () => MealScalarFieldEnum,
+  ModelName: () => ModelName,
+  NullTypes: () => NullTypes2,
+  NullableJsonNullValueInput: () => NullableJsonNullValueInput,
+  NullsOrder: () => NullsOrder,
+  OrderScalarFieldEnum: () => OrderScalarFieldEnum,
+  Order_ItemScalarFieldEnum: () => Order_ItemScalarFieldEnum,
+  PrismaClientInitializationError: () => PrismaClientInitializationError2,
+  PrismaClientKnownRequestError: () => PrismaClientKnownRequestError2,
+  PrismaClientRustPanicError: () => PrismaClientRustPanicError2,
+  PrismaClientUnknownRequestError: () => PrismaClientUnknownRequestError2,
+  PrismaClientValidationError: () => PrismaClientValidationError2,
+  ProviderScalarFieldEnum: () => ProviderScalarFieldEnum,
+  QueryMode: () => QueryMode,
+  ReviewScalarFieldEnum: () => ReviewScalarFieldEnum,
+  SessionScalarFieldEnum: () => SessionScalarFieldEnum,
+  SortOrder: () => SortOrder,
+  Sql: () => Sql2,
+  TransactionIsolationLevel: () => TransactionIsolationLevel,
+  UserScalarFieldEnum: () => UserScalarFieldEnum,
+  VerificationScalarFieldEnum: () => VerificationScalarFieldEnum,
+  defineExtension: () => defineExtension,
+  empty: () => empty2,
+  getExtensionContext: () => getExtensionContext,
+  join: () => join2,
+  prismaVersion: () => prismaVersion,
+  raw: () => raw2,
+  sql: () => sql
+});
 import * as runtime2 from "@prisma/client/runtime/client";
+var PrismaClientKnownRequestError2 = runtime2.PrismaClientKnownRequestError;
+var PrismaClientUnknownRequestError2 = runtime2.PrismaClientUnknownRequestError;
+var PrismaClientRustPanicError2 = runtime2.PrismaClientRustPanicError;
+var PrismaClientInitializationError2 = runtime2.PrismaClientInitializationError;
+var PrismaClientValidationError2 = runtime2.PrismaClientValidationError;
+var sql = runtime2.sqltag;
+var empty2 = runtime2.empty;
+var join2 = runtime2.join;
+var raw2 = runtime2.raw;
+var Sql2 = runtime2.Sql;
+var Decimal2 = runtime2.Decimal;
 var getExtensionContext = runtime2.Extensions.getExtensionContext;
+var prismaVersion = {
+  client: "7.3.0",
+  engine: "9d6ad21cbbceab97458517b147a6a09ff43aa735"
+};
 var NullTypes2 = {
   DbNull: runtime2.NullTypes.DbNull,
   JsonNull: runtime2.NullTypes.JsonNull,
   AnyNull: runtime2.NullTypes.AnyNull
+};
+var DbNull2 = runtime2.DbNull;
+var JsonNull2 = runtime2.JsonNull;
+var AnyNull2 = runtime2.AnyNull;
+var ModelName = {
+  Session: "Session",
+  Account: "Account",
+  Verification: "Verification",
+  Categories: "Categories",
+  Meal: "Meal",
+  Order: "Order",
+  Order_Item: "Order_Item",
+  Provider: "Provider",
+  DocumentEmbedding: "DocumentEmbedding",
+  Review: "Review",
+  User: "User"
 };
 var TransactionIsolationLevel = runtime2.makeStrictEnum({
   ReadUncommitted: "ReadUncommitted",
@@ -78,6 +159,145 @@ var TransactionIsolationLevel = runtime2.makeStrictEnum({
   RepeatableRead: "RepeatableRead",
   Serializable: "Serializable"
 });
+var SessionScalarFieldEnum = {
+  id: "id",
+  expiresAt: "expiresAt",
+  token: "token",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+  ipAddress: "ipAddress",
+  userAgent: "userAgent",
+  userId: "userId"
+};
+var AccountScalarFieldEnum = {
+  id: "id",
+  accountId: "accountId",
+  providerId: "providerId",
+  userId: "userId",
+  accessToken: "accessToken",
+  refreshToken: "refreshToken",
+  idToken: "idToken",
+  accessTokenExpiresAt: "accessTokenExpiresAt",
+  refreshTokenExpiresAt: "refreshTokenExpiresAt",
+  scope: "scope",
+  password: "password",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt"
+};
+var VerificationScalarFieldEnum = {
+  id: "id",
+  identifier: "identifier",
+  value: "value",
+  expiresAt: "expiresAt",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt"
+};
+var CategoriesScalarFieldEnum = {
+  id: "id",
+  name: "name",
+  created_at: "created_at",
+  updated_at: "updated_at"
+};
+var MealScalarFieldEnum = {
+  id: "id",
+  user_id: "user_id",
+  category_id: "category_id",
+  name: "name",
+  description: "description",
+  price: "price",
+  dietary_type: "dietary_type",
+  is_available: "is_available",
+  created_at: "created_at",
+  updated_at: "updated_at"
+};
+var OrderScalarFieldEnum = {
+  id: "id",
+  user_id: "user_id",
+  total_price: "total_price",
+  delivery_address: "delivery_address",
+  payment_method: "payment_method",
+  status: "status",
+  cancelled_by: "cancelled_by",
+  created_at: "created_at",
+  updated_at: "updated_at"
+};
+var Order_ItemScalarFieldEnum = {
+  id: "id",
+  orderId: "orderId",
+  meal_id: "meal_id",
+  quantity: "quantity",
+  price: "price",
+  created_at: "created_at",
+  updated_at: "updated_at"
+};
+var ProviderScalarFieldEnum = {
+  id: "id",
+  user_id: "user_id",
+  restaurant_name: "restaurant_name",
+  description: "description",
+  address: "address",
+  is_open: "is_open",
+  fb_link: "fb_link",
+  created_at: "created_at",
+  updated_at: "updated_at"
+};
+var DocumentEmbeddingScalarFieldEnum = {
+  id: "id",
+  chunkKey: "chunkKey",
+  sourceType: "sourceType",
+  sourceId: "sourceId",
+  sourceLabel: "sourceLabel",
+  content: "content",
+  metaData: "metaData",
+  isDelete: "isDelete",
+  deletedAt: "deletedAt",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt"
+};
+var ReviewScalarFieldEnum = {
+  id: "id",
+  meal_id: "meal_id",
+  rating: "rating",
+  comment: "comment",
+  user_id: "user_id",
+  is_visible: "is_visible",
+  created_at: "created_at",
+  updated_at: "updated_at"
+};
+var UserScalarFieldEnum = {
+  id: "id",
+  name: "name",
+  email: "email",
+  emailVerified: "emailVerified",
+  image: "image",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+  role: "role",
+  phone: "phone",
+  address: "address",
+  status: "status"
+};
+var SortOrder = {
+  asc: "asc",
+  desc: "desc"
+};
+var NullableJsonNullValueInput = {
+  DbNull: DbNull2,
+  JsonNull: JsonNull2
+};
+var QueryMode = {
+  default: "default",
+  insensitive: "insensitive"
+};
+var NullsOrder = {
+  first: "first",
+  last: "last"
+};
+var JsonNullValueFilter = {
+  DbNull: DbNull2,
+  JsonNull: JsonNull2,
+  AnyNull: AnyNull2
+};
 var defineExtension = runtime2.Extensions.defineExtension;
 
 // src/db/generated/enums.ts
@@ -162,7 +382,7 @@ var auth = betterAuth({
 
 // src/routes/routes.ts
 import express8 from "express";
-import httpStatus9 from "http-status-codes";
+import httpStatus10 from "http-status-codes";
 
 // src/middleware/authGuard.ts
 import httpStatus from "http-status-codes";
@@ -1886,8 +2106,352 @@ router7.get(
 );
 var dashboard_route_default = router7;
 
+// src/module/embedding/embedding.route.ts
+import { Router as Router8 } from "express";
+
+// src/module/embedding/embedding.controller.ts
+import httpStatus9 from "http-status-codes";
+
+// src/module/embedding/embedding.service.ts
+import { transliterate } from "transliteration";
+var EmbeddingService = class {
+  apiKey;
+  apiUrl = "https://openrouter.ai/api/v1";
+  embeddingModel;
+  constructor() {
+    this.apiKey = config.OPEN_ROUTER.OPEN_ROUTER_API_KEY || "";
+    this.embeddingModel = config.OPEN_ROUTER.OPEN_ROUTER_EMBEDDING_MODEL || "nvidia/llama-nemotron-embed-vl-1b-v2:free";
+    if (!this.apiKey) {
+      throw new Error("OPEN_ROUTER_API_KEY is not set in .env");
+    }
+  }
+  async generateEmbedding(text) {
+    try {
+      const normalized = transliterate(text).trim();
+      const response = await fetch(`${this.apiUrl}/embeddings`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          input: normalized,
+          model: this.embeddingModel
+        })
+      });
+      if (!response.ok) {
+        throw new Error(`OpenRouter API Error: ${response.status}`);
+      }
+      const data = await response.json();
+      if (!data.data || data.data.length === 0) {
+        throw new Error("No embedding data returned");
+      }
+      return data.data[0].embedding;
+    } catch (error) {
+      console.error("Error generating embedding:", error);
+      throw error;
+    }
+  }
+};
+
+// src/module/embedding/indexing.service.ts
+var toVectorLiteral = (vector) => `[${vector.join(",")}]`;
+var IndexingService = class {
+  embeddingService;
+  constructor() {
+    this.embeddingService = new EmbeddingService();
+  }
+  async getStats() {
+    const [totalDocuments, mealDocuments, deletedDocuments] = await Promise.all([
+      db.documentEmbedding.count(),
+      db.documentEmbedding.count({
+        where: {
+          sourceType: "MEAL",
+          isDelete: false
+        }
+      }),
+      db.documentEmbedding.count({
+        where: {
+          isDelete: true
+        }
+      })
+    ]);
+    return {
+      totalDocuments,
+      mealDocuments,
+      deletedDocuments
+    };
+  }
+  async indexDocument(chunkKey, sourceType, sourceId, content, sourceLabel, metadata) {
+    try {
+      const embedding = await this.embeddingService.generateEmbedding(content);
+      const vectorLiteral = toVectorLiteral(embedding);
+      const updatedCount = await db.$executeRaw(prismaNamespace_exports.sql`
+        UPDATE "document_embeddings"
+        SET
+          "sourceType" = ${sourceType},
+          "sourceId" = ${sourceId},
+          "sourceLabel" = ${sourceLabel ?? null},
+          "content" = ${content},
+          "metaData" = ${JSON.stringify(metadata ?? {})}::jsonb,
+          "embedding" = CAST(${vectorLiteral} AS vector),
+          "isDelete" = false,
+          "deletedAt" = null,
+          "updatedAt" = NOW()
+        WHERE "chunkKey" = ${chunkKey}
+      `);
+      if (updatedCount > 0) {
+        return;
+      }
+      await db.$executeRaw(prismaNamespace_exports.sql`
+        INSERT INTO "document_embeddings"
+        (
+          "id",
+          "chunkKey",
+          "sourceType",
+          "sourceId",
+          "sourceLabel",
+          "content",
+          "metaData",
+          "embedding",
+          "updatedAt"
+        )
+        VALUES
+        (
+          gen_random_uuid(),
+          ${chunkKey},
+          ${sourceType},
+          ${sourceId},
+          ${sourceLabel ?? null},
+          ${content},
+          ${JSON.stringify(metadata ?? {})}::jsonb,
+          CAST(${vectorLiteral} AS vector),
+          NOW()
+        )
+      `);
+    } catch (error) {
+      console.error("indexDocument error:", error);
+      throw error;
+    }
+  }
+  async indexProductsData() {
+    try {
+      console.log("Fetching products for indexing...");
+      const meals = await db.meal.findMany({
+        where: {
+          is_available: true
+        },
+        include: {
+          category: true,
+          reviews: true
+        }
+      });
+      console.log(`Fetched ${meals.length} products. Starting indexing...`);
+      let indexedCount = 0;
+      for (const meal of meals) {
+        const content = `${meal.name} - ${meal.description} Category: ${meal.category.name} Reviews: ${meal.reviews.map((r) => r.comment).join("; ")}`;
+        const metadata = {
+          name: meal.name,
+          description: meal.description,
+          category: meal.category.name,
+          reviews: meal.reviews.map((r) => ({
+            rating: r.rating,
+            comment: r.comment
+          })),
+          price: meal.price
+        };
+        const chunkKey = `MEAL_${meal.id}`;
+        await this.indexDocument(
+          chunkKey,
+          "MEAL",
+          meal.id,
+          content,
+          meal.name,
+          metadata
+        );
+        indexedCount++;
+      }
+      console.log(`Successfully indexed ${indexedCount} meals.`);
+      return {
+        success: true,
+        message: `Successfully indexed ${indexedCount} meals.`,
+        indexedCount
+      };
+    } catch (error) {
+      console.error("indexProductsData error:", error);
+      throw error;
+    }
+  }
+  async similaritySearch(queryEmbedding, limit = 5, threshold = 0.4, sourceType = "MEAL") {
+    const vectorLiteral = toVectorLiteral(queryEmbedding);
+    const results = await db.$queryRaw(
+      prismaNamespace_exports.sql`
+        SELECT
+          id,
+          "sourceType",
+          "sourceId",
+          "sourceLabel",
+          "content",
+          "metaData" AS "metadata",
+          1 - (embedding <=> CAST(${vectorLiteral} AS vector)) AS similarity
+        FROM "document_embeddings"
+        WHERE "isDelete" = false
+          AND "sourceType" = ${sourceType}
+          AND 1 - (embedding <=> CAST(${vectorLiteral} AS vector)) >= ${threshold}
+        ORDER BY embedding <=> CAST(${vectorLiteral} AS vector)
+        LIMIT ${limit}
+      `
+    );
+    return results;
+  }
+};
+
+// src/module/embedding/llm.service.ts
+var LLMService = class {
+  apiKey;
+  apiUrl = "https://openrouter.ai/api/v1";
+  model;
+  constructor() {
+    this.apiKey = config.OPEN_ROUTER.OPEN_ROUTER_API_KEY || "";
+    this.model = config.OPEN_ROUTER.OPEN_ROUTER_TEXT_MODEL || "nvidia/nemotron-3-super-120b-a12b:free";
+    if (!this.apiKey) {
+      throw new Error("OpenRouter api key is missing...");
+    }
+  }
+  async generateResponse(systemPrompt, userQuery, asJson = false) {
+    try {
+      const bodyPayload = {
+        model: this.model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userQuery }
+        ],
+        temperature: 0.1,
+        max_tokens: 1500
+      };
+      if (asJson && (this.model.includes("gpt") || this.model.includes("openai"))) {
+        bodyPayload.response_format = { type: "json_object" };
+      }
+      const response = await fetch(`${this.apiUrl}/chat/completions`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://uranto.com",
+          "X-Title": "Uranto E-Commerce"
+        },
+        body: JSON.stringify(bodyPayload)
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          `OpenRouter API error: ${response.status} - ${errorData.error?.message || "unknown error"}`
+        );
+      }
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error("Error generating LLM response:", error);
+      throw error;
+    }
+  }
+};
+
+// src/module/embedding/embedding.controller.ts
+var toPositiveNumber = (value, fallback, maximum) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallback;
+  }
+  return Math.min(parsed, maximum);
+};
+var toThreshold = (value, fallback = 0.4) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0 || parsed > 1) {
+    return fallback;
+  }
+  return parsed;
+};
+var EmbeddingController = class _EmbeddingController {
+  static embeddingService = new EmbeddingService();
+  static indexingService = new IndexingService();
+  static llmService = new LLMService();
+  static getStats = catchAsync(async (_req, res) => {
+    const result = await _EmbeddingController.indexingService.getStats();
+    sendResponse(res, {
+      statusCode: httpStatus9.OK,
+      success: true,
+      message: "Embedding stats retrieved successfully",
+      data: result
+    });
+  });
+  static ingestProducts = catchAsync(async (_req, res) => {
+    const result = await _EmbeddingController.indexingService.indexProductsData();
+    sendResponse(res, {
+      statusCode: httpStatus9.OK,
+      success: true,
+      message: result.message,
+      data: result
+    });
+  });
+  static queryRag = catchAsync(async (req, res) => {
+    const { query, limit, threshold, sourceType } = req.body;
+    if (!query?.trim()) {
+      throw new Error("Query is required");
+    }
+    const queryEmbedding = await _EmbeddingController.embeddingService.generateEmbedding(query);
+    const results = await _EmbeddingController.indexingService.similaritySearch(
+      queryEmbedding,
+      toPositiveNumber(limit, 5, 10),
+      toThreshold(threshold),
+      sourceType?.trim() || "MEAL"
+    );
+    const context = results.map(
+      (item, index) => `${index + 1}. ${item.sourceLabel ?? item.sourceId}
+${item.content}`
+    ).join("\n\n");
+    const systemPrompt = [
+      "You are FoodHub's helpful food search assistant.",
+      "Answer only from the provided context.",
+      "If the context is empty or not enough, say that no matching meal was found.",
+      "Keep the answer concise and practical."
+    ].join(" ");
+    const answer = await _EmbeddingController.llmService.generateResponse(
+      systemPrompt,
+      `User query: ${query}
+
+Context:
+${context || "No context found."}`
+    );
+    sendResponse(res, {
+      statusCode: httpStatus9.OK,
+      success: true,
+      message: "RAG query completed successfully",
+      data: {
+        answer,
+        matches: results
+      }
+    });
+  });
+};
+
+// src/module/embedding/embedding.route.ts
+var router8 = Router8();
+router8.get(
+  "/stats",
+  authGuard("admin"),
+  EmbeddingController.getStats
+);
+router8.post(
+  "/ingest-product",
+  authGuard("admin"),
+  EmbeddingController.ingestProducts
+);
+router8.post("/query", EmbeddingController.queryRag);
+var embedding_route_default = router8;
+
 // src/routes/routes.ts
-var router8 = express8.Router();
+var router9 = express8.Router();
 var apiVersion = `/api`;
 var moduleRouter = [
   {
@@ -1917,16 +2481,20 @@ var moduleRouter = [
   {
     path: `${apiVersion}/dashboard`,
     route: dashboard_route_default
+  },
+  {
+    path: `${apiVersion}/embedding`,
+    route: embedding_route_default
   }
 ];
-moduleRouter.forEach((route) => router8.use(route.path, route.route));
-router8.use((req, res) => {
-  res.status(httpStatus9.NOT_FOUND).send({
+moduleRouter.forEach((route) => router9.use(route.path, route.route));
+router9.use((req, res) => {
+  res.status(httpStatus10.NOT_FOUND).send({
     error: "Not Found",
     message: `${req.originalUrl} - This route is not found`
   });
 });
-var routes_default = router8;
+var routes_default = router9;
 
 // src/app.ts
 var userService = new UserServices();
@@ -1952,14 +2520,14 @@ app.use("/api/auth/me", authGuard(), async (req, res) => {
   const user = await userService.getUserProfile(req.user.email);
   sendResponse(res, {
     success: true,
-    statusCode: httpStatus10.OK,
+    statusCode: httpStatus11.OK,
     message: "Profile",
     data: user
   });
 });
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.get("/", (req, res) => {
-  res.status(httpStatus10.OK).send({
+  res.status(httpStatus11.OK).send({
     success: true,
     message: "Hey Baby Programer !!! What's up ?",
     time: (/* @__PURE__ */ new Date()).toISOString()
