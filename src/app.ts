@@ -46,7 +46,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.get("/", (req: Request, res: Response) => {
   res.status(httpStatus.OK).send({
     success: true,
-    message: "Hey Baby Programer !!! What's up ?",
+    message: "Hey Baby Programer !!! What's up?",
     time: new Date().toISOString(),
   });
 });
