@@ -12,6 +12,32 @@ const REVIEW_SINGLE_TTL = 180;
 export class ReviewsController {
   private reviewService = new ReviewService();
 
+  getPublicReviews = catchAsync(async (req: Request, res: Response) => {
+    const rawLimit = Number(req.query.limit);
+    const limit = Number.isNaN(rawLimit) ? 8 : rawLimit;
+    const cacheKey = `reviews:public:${limit}`;
+    const cached = await cacheGet<unknown[]>(cacheKey);
+
+    if (cached) {
+      return sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Retrieve public reviews",
+        data: cached,
+      });
+    }
+
+    const reviews = await this.reviewService.getPublicReviews(limit);
+    await cacheSet(cacheKey, reviews, REVIEW_LIST_TTL);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Retrieve public reviews",
+      data: reviews,
+    });
+  });
+
   getAllReviews = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const cacheKey = `reviews:list:${req.user.role}:${req.user.id}:${req.originalUrl}`;

@@ -6,6 +6,31 @@ import { getPagination } from "../../utils/pagination";
 export class ReviewService {
   private readonly db = Database;
 
+  getPublicReviews = async (limit = 8) => {
+    const safeLimit = Number.isNaN(limit)
+      ? 8
+      : Math.min(Math.max(limit, 1), 20);
+
+    const reviews = await this.db.review.findMany({
+      where: {
+        is_visible: true,
+      },
+      take: safeLimit,
+      orderBy: {
+        created_at: "desc",
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return reviews;
+  };
+
   getReview = async (req: Request) => {
     const userId = req.user.id as string;
     const role = req.user.role as string;

@@ -1903,11 +1903,29 @@ var OrderService = class {
 };
 
 // src/module/order/order.controller.ts
+var ORDER_LIST_TTL = 120;
+var ORDER_SINGLE_TTL = 120;
 var OrdersController = class {
   providerService = new OrderService();
   getAllOrders = catchAsync(
     async (req, res, next) => {
+      const cacheKey = `orders:list:${req.user.role}:${req.user.id}:${req.originalUrl}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus6.OK,
+          success: true,
+          message: "Retrieve all orders",
+          data: cached.orders,
+          meta: cached.meta
+        });
+      }
       const result = await this.providerService.getOrder(req);
+      await cacheSet(
+        cacheKey,
+        { orders: result.orders, meta: result.meta },
+        ORDER_LIST_TTL
+      );
       sendResponse(res, {
         statusCode: httpStatus6.OK,
         success: true,
@@ -1919,7 +1937,18 @@ var OrdersController = class {
   );
   getAllOrdersMeal = catchAsync(
     async (req, res, next) => {
+      const cacheKey = `orders:meal:${req.user.id}:${req.originalUrl}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus6.OK,
+          success: true,
+          message: "Retrieve all orders",
+          data: cached.orders
+        });
+      }
       const result = await this.providerService.getOrderMeal(req);
+      await cacheSet(cacheKey, { orders: result.orders }, ORDER_LIST_TTL);
       sendResponse(res, {
         statusCode: httpStatus6.OK,
         success: true,
@@ -1931,7 +1960,18 @@ var OrdersController = class {
   getSingleOrder = catchAsync(
     async (req, res, next) => {
       const { id } = req.params;
+      const cacheKey = `orders:single:${id}:${req.user.role}:${req.user.id}`;
+      const cached = await cacheGet(cacheKey);
+      if (cached) {
+        return sendResponse(res, {
+          statusCode: httpStatus6.OK,
+          success: true,
+          message: "Retrieve single meal",
+          data: cached
+        });
+      }
       const result = await this.providerService.getIdOrder(id);
+      await cacheSet(cacheKey, result, ORDER_SINGLE_TTL);
       sendResponse(res, {
         statusCode: httpStatus6.OK,
         success: true,
@@ -1943,6 +1983,8 @@ var OrdersController = class {
   createOrder = catchAsync(
     async (req, res, next) => {
       const result = await this.providerService.createOrder(req);
+      await cacheDeleteByPattern("orders:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus6.CREATED,
         success: true,
@@ -1959,6 +2001,8 @@ var OrdersController = class {
       req.user.role,
       req.user.id
     );
+    await cacheDeleteByPattern("orders:*");
+    await cacheDeleteByPattern("dashboard:*");
     sendResponse(res, {
       statusCode: httpStatus6.OK,
       success: true,
@@ -1970,6 +2014,8 @@ var OrdersController = class {
     async (req, res, next) => {
       const { id } = req.params;
       const result = await this.providerService.deleteOrder(id);
+      await cacheDeleteByPattern("orders:*");
+      await cacheDeleteByPattern("dashboard:*");
       sendResponse(res, {
         statusCode: httpStatus6.OK,
         success: true,
@@ -2024,6 +2070,26 @@ import httpStatus7 from "http-status-codes";
 // src/module/review/review.service.ts
 var ReviewService = class {
   db = db;
+  getPublicReviews = async (limit = 8) => {
+    const safeLimit = Number.isNaN(limit) ? 8 : Math.min(Math.max(limit, 1), 20);
+    const reviews = await this.db.review.findMany({
+      where: {
+        is_visible: true
+      },
+      take: safeLimit,
+      orderBy: {
+        created_at: "desc"
+      },
+      include: {
+        user: {
+          select: {
+            name: true
+          }
+        }
+      }
+    });
+    return reviews;
+  };
   getReview = async (req) => {
     const userId = req.user.id;
     const role = req.user.role;
@@ -2160,6 +2226,28 @@ var REVIEW_LIST_TTL = 180;
 var REVIEW_SINGLE_TTL = 180;
 var ReviewsController = class {
   reviewService = new ReviewService();
+  getPublicReviews = catchAsync(async (req, res) => {
+    const rawLimit = Number(req.query.limit);
+    const limit = Number.isNaN(rawLimit) ? 8 : rawLimit;
+    const cacheKey = `reviews:public:${limit}`;
+    const cached = await cacheGet(cacheKey);
+    if (cached) {
+      return sendResponse(res, {
+        statusCode: httpStatus7.OK,
+        success: true,
+        message: "Retrieve public reviews",
+        data: cached
+      });
+    }
+    const reviews = await this.reviewService.getPublicReviews(limit);
+    await cacheSet(cacheKey, reviews, REVIEW_LIST_TTL);
+    sendResponse(res, {
+      statusCode: httpStatus7.OK,
+      success: true,
+      message: "Retrieve public reviews",
+      data: reviews
+    });
+  });
   getAllReviews = catchAsync(
     async (req, res, next) => {
       const cacheKey = `reviews:list:${req.user.role}:${req.user.id}:${req.originalUrl}`;
@@ -2277,6 +2365,7 @@ var ReviewsController = class {
 // src/module/review/review.route.ts
 var router6 = express6.Router();
 var reviewController = new ReviewsController();
+router6.get("/public", reviewController.getPublicReviews.bind(reviewController));
 router6.get(
   "/all",
   authGuard("admin", "customer"),
@@ -2778,7 +2867,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.get("/", (req, res) => {
   res.status(httpStatus11.OK).send({
     success: true,
-    message: "Hey Baby Programer !!! What's up ?",
+    message: "Hey Baby Programer !!! What's up?",
     time: (/* @__PURE__ */ new Date()).toISOString()
   });
 });

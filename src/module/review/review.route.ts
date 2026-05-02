@@ -4,6 +4,9 @@ import { ReviewsController } from "./review.controller";
 
 const router: Router = express.Router();
 const reviewController = new ReviewsController();
+
+router.get("/public", reviewController.getPublicReviews.bind(reviewController));
+
 router.get(
   "/all",
   authGuard("admin", "customer"),
